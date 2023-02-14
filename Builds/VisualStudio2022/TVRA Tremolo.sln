@@ -1,0 +1,39 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio Version 17
+
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TVRA Tremolo - Standalone Plugin", "TVRA Tremolo_StandalonePlugin.vcxproj", "{1DAC5ECF-C857-5CD1-D24B-B09314B30130}"
+	ProjectSection(ProjectDependencies) = postProject
+		{B04E26CD-0C94-16D7-A4B4-7AC8F08761EB} = {B04E26CD-0C94-16D7-A4B4-7AC8F08761EB}
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TVRA Tremolo - VST3", "TVRA Tremolo_VST3.vcxproj", "{5986976F-28D0-1F7D-5E77-940881230C54}"
+	ProjectSection(ProjectDependencies) = postProject
+		{B04E26CD-0C94-16D7-A4B4-7AC8F08761EB} = {B04E26CD-0C94-16D7-A4B4-7AC8F08761EB}
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TVRA Tremolo - Shared Code", "TVRA Tremolo_SharedCode.vcxproj", "{B04E26CD-0C94-16D7-A4B4-7AC8F08761EB}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x64 = Debug|x64
+		Release|x64 = Release|x64
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{5986976F-28D0-1F7D-5E77-940881230C54}.Debug|x64.ActiveCfg = Debug|x64
+		{5986976F-28D0-1F7D-5E77-940881230C54}.Debug|x64.Build.0 = Debug|x64
+		{5986976F-28D0-1F7D-5E77-940881230C54}.Release|x64.ActiveCfg = Release|x64
+		{5986976F-28D0-1F7D-5E77-940881230C54}.Release|x64.Build.0 = Release|x64
+		{1DAC5ECF-C857-5CD1-D24B-B09314B30130}.Debug|x64.ActiveCfg = Debug|x64
+		{1DAC5ECF-C857-5CD1-D24B-B09314B30130}.Debug|x64.Build.0 = Debug|x64
+		{1DAC5ECF-C857-5CD1-D24B-B09314B30130}.Release|x64.ActiveCfg = Release|x64
+		{1DAC5ECF-C857-5CD1-D24B-B09314B30130}.Release|x64.Build.0 = Release|x64
+		{B04E26CD-0C94-16D7-A4B4-7AC8F08761EB}.Debug|x64.ActiveCfg = Debug|x64
+		{B04E26CD-0C94-16D7-A4B4-7AC8F08761EB}.Debug|x64.Build.0 = Debug|x64
+		{B04E26CD-0C94-16D7-A4B4-7AC8F08761EB}.Release|x64.ActiveCfg = Release|x64
+		{B04E26CD-0C94-16D7-A4B4-7AC8F08761EB}.Release|x64.Build.0 = Release|x64
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
