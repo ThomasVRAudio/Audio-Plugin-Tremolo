@@ -34,6 +34,11 @@ TVRATremoloAudioProcessorEditor::TVRATremoloAudioProcessorEditor (TVRATremoloAud
     mShapeType.addItemList(mShapeTypeList,1);
     comboSetup(mShapeType, shapeParameter, xOffset + getLocalBounds().getWidth() / 4, 200, 100, 20);
 
+    mSpeedSlider.setupMouseEvent(*this, audioProcessor, speedParameter->getParameterIndex());
+    mDryWetSlider.setupMouseEvent(*this, audioProcessor, dryWetParameter->getParameterIndex());
+    mDepthSlider.setupMouseEvent(*this, audioProcessor, depthParameter->getParameterIndex());
+
+
 }
 
 void TVRATremoloAudioProcessorEditor::sliderSetup(Slider& slider, AudioParameterFloat* param, Label &label, float x, float y, float width, float height) {
