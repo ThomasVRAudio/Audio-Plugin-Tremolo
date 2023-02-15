@@ -58,7 +58,7 @@ public:
 
 private:
     std::unique_ptr<AudioParameterFloat> mSpeedParameter;
-    float period;
+    double period;
     double smoothSpeedParam;
     //==============================================================================
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (TVRATremoloAudioProcessor)

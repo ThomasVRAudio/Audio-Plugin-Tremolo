@@ -150,13 +150,15 @@ void TVRATremoloAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, 
     for (size_t i = 0; i < buffer.getNumSamples(); i++)
     {
         smoothSpeedParam = smoothSpeedParam + 0.001 * (*mSpeedParameter - smoothSpeedParam);
-        float lfo = sin(2 * juce::MathConstants<float>::pi * period * smoothSpeedParam);
+    
+        period += juce::MathConstants<float>::twoPi * smoothSpeedParam / getSampleRate();
+
+        float lfo = sin(period);
         float lfoMapped = jmap(lfo, -1.f, 1.f, 0.f, 1.f);
-        period += 1 / getSampleRate();
+
         channelLeft[i] *= lfoMapped;
         channelRight[i] *= lfoMapped;
     }
-
 }
 
 //==============================================================================
