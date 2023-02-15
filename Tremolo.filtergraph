@@ -61,14 +61,14 @@
       </OUTPUTS>
     </LAYOUT>
   </FILTER>
-  <FILTER uid="7" x="0.50625" y="0.2983870967741936" useARA="0" uiLastX_Normal="105"
+  <FILTER uid="7" x="0.51375" y="0.3024193548387097" useARA="0" uiLastX_Normal="105"
           uiLastY_Normal="14" uiopen_Normal="0">
     <PLUGIN name="AudioFilePlayer" format="VST3" category="Fx" manufacturer="Matkat Music LLC"
             version="1.0.0" file="C:\Program Files\Common Files\VST3\AudioFilePlayer.vst3\Contents\x86_64-win\AudioFilePlayer.vst3"
-            uniqueId="79fe81c" isInstrument="0" fileTime="1863cc044c1" infoUpdateTime="18650677aec"
+            uniqueId="79fe81c" isInstrument="0" fileTime="1863cc044c1" infoUpdateTime="186547130eb"
             numInputs="2" numOutputs="2" isShell="0" hasARAExtension="0"
             uid="e95d02c7"/>
-    <STATE>360.VMjLg7U....O+fWarAhckI2bo8la8HRLt.iHfTlai8FYo41Y8HRUTYTK3HxO9.BOVMEUy.Ea0cVZtMEcgQWY9vSRC8Vav8lak4Fc9DCN13BTIISX1UEaho2ZVkUdAAkKAwDUigWRWkEcQ0VTucmUY4BQlgUQPolShUELhsVRxHlXQUjV0AiUXk2cEEUcMY0XyUEagoWSGc0PU0FVm0zUYYlKqIVcuYUVoEkLhIFLRsjYLAiVqEkLX4VPRszb1U0Tuc1QYU2XsElXEoVXzEkQYYFQpEVcQcjVqkzQHEDLrg0aUwVX5EjTSUWTVMlbEwlXzomQhkmKt3hKt3hKt3hKt3hKlIUUMQUTPkzUZESQFM1ZQQEV5UjQtDDQlAEMAcEV40zQtDDQ14hK5EjKt3hKt3hKt3hRUACTEEzZh8VVWgkdUYTTmE0UXwyKIMzasA2atUlaz4COuX0TTMCTrU2Yo41TzEFck4C.</STATE>
+    <STATE>351.VMjLgXU....O+fWarAhckI2bo8la8HRLt.iHfTlai8FYo41Y8HRUTYTK3HxO9.BOVMEUy.Ea0cVZtMEcgQWY9vSRC8Vav8lak4Fc9DyM43BTIISX1UEaho2ZVkUdAAkKAwDUigWRWkEcQ0VTucmUY4BQ1YUQPolShUELhsVRxHlXQUjV0AiUXk2cEEUcMY0XyUEagoWSGc0PU0FVm0zUYYlKqIVcuYUVoEkLhIFLRsjYLAiVqEkLX4VPRszb1U0Tuc1QYU2XsElXiQ0XuE0UXgWPnQ0ZMESX3EkQHYWRWgUZQckVoUEaKMWPxvjKt3hKt3hKt3hKt3hKtQUUCUEQTg2ZrM1YQcUVDUjQicVPP4RPHQEY1UTLhkWPP4RPL4hKi4hKt3hKt3hKtXlTU0DUQAURWoULEYzXqEEUXoWQFwyKIMzasA2atUlaz4COuX0TTMCTrU2Yo41TzEFck4C.</STATE>
     <LAYOUT>
       <INPUTS>
         <BUS index="0" layout="L R"/>
@@ -82,7 +82,7 @@
           uiLastY_Normal="307" uiopen_Normal="0">
     <PLUGIN name="TVRA Tremolo" format="VST3" category="Fx" manufacturer="Thomas VR Audio"
             version="1.0.0" file="D:\Users\Thomas\Documents\C Programs\CPP\TVRA Tremolo\Builds\VisualStudio2022\x64\Debug\VST3\TVRA Tremolo.vst3\Contents\x86_64-win\TVRA Tremolo.vst3"
-            uniqueId="efa8e3e5" isInstrument="0" fileTime="1865066e009" infoUpdateTime="18650677aec"
+            uniqueId="efa8e3e5" isInstrument="0" fileTime="186546fa854" infoUpdateTime="186547130ec"
             numInputs="2" numOutputs="2" isShell="0" hasARAExtension="0"
             uid="e9523af5"/>
     <STATE>191.VMjLgXK....O+fWarAhckI2bo8la8HRLt.iHfTlai8FYo41Y8HRUTYTK3HxO9.BOVMEUy.Ea0cVZtMEcgQWY9vSRC8Vav8lak4Fc9XCLt3hKt3hKt3hKt3hYRUUSTEETIckVwTjQisVTTgkdEYjKAQjYPQSPWgUdMcjKAQjct3hdA4hKt3hKt3hKtnTUv.UQAslXuk0UXoWUFE0YQcEV77RRC8Vav8lak4Fc9vyKVMEUy.Ea0cVZtMEcgQWY9..</STATE>

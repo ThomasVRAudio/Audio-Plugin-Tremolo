@@ -25,10 +25,10 @@ public:
     void resized() override;
 
 private:
-    // This reference is provided as a quick way for your editor to
-    // access the processor object that created it.
     TVRATremoloAudioProcessor& audioProcessor;
-
+    void sliderSetup(Slider& slider, AudioParameterFloat* param, float x = 0, float y = 0, float width = 100, float height = 100);
     Slider mSpeedSlider;
+    Slider mDryWetSlider;
+    Slider mDepthSlider;
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (TVRATremoloAudioProcessorEditor)
 };

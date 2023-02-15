@@ -20,16 +20,24 @@ TVRATremoloAudioProcessorEditor::TVRATremoloAudioProcessorEditor (TVRATremoloAud
     auto params = audioProcessor.getParameters();
     
     AudioParameterFloat* speedParameter = (AudioParameterFloat*)params.getUnchecked(0);
-    mSpeedSlider.setBounds(0, 0, 100, 100);
-    mSpeedSlider.setRange(speedParameter->range.start, speedParameter->range.end);
-    mSpeedSlider.setValue(speedParameter->get());
-    mSpeedSlider.setTextBoxStyle(Slider::NoTextBox, false, 0, 0);
-    mSpeedSlider.setSliderStyle(Slider::LinearVertical);
-    addAndMakeVisible(mSpeedSlider);
+    AudioParameterFloat* dryWetParameter = (AudioParameterFloat*)params.getUnchecked(1);
+    AudioParameterFloat* depthParameter = (AudioParameterFloat*)params.getUnchecked(2);
+    sliderSetup(mSpeedSlider, speedParameter, 0,0);
+    sliderSetup(mDryWetSlider, dryWetParameter, 100, 0);
+    sliderSetup(mDepthSlider, depthParameter, 200, 0);
+}
 
-    mSpeedSlider.onValueChange = [this, speedParameter] { *speedParameter = mSpeedSlider.getValue(); };
-    mSpeedSlider.onDragStart = [this, speedParameter] { speedParameter->beginChangeGesture(); };
-    mSpeedSlider.onDragEnd = [this, speedParameter] { speedParameter->endChangeGesture(); };
+void TVRATremoloAudioProcessorEditor::sliderSetup(Slider& slider, AudioParameterFloat* param, float x, float y, float width, float height) {
+    slider.setBounds(x, y, width, height);
+    slider.setRange(param->range.start, param->range.end);
+    slider.setValue(param->get());
+    slider.setTextBoxStyle(Slider::NoTextBox, false, 0, 0);
+    slider.setSliderStyle(Slider::LinearVertical);
+    addAndMakeVisible(slider);
+
+    slider.onValueChange = [&slider, param] { *param = slider.getValue(); };
+    slider.onDragStart = [&slider, param] { param->beginChangeGesture(); };
+    slider.onDragEnd = [&slider, param] { param->endChangeGesture(); };
 }
 
 TVRATremoloAudioProcessorEditor::~TVRATremoloAudioProcessorEditor()

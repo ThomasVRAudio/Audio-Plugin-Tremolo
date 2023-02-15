@@ -25,7 +25,13 @@ TVRATremoloAudioProcessor::TVRATremoloAudioProcessor()
     mSpeedParameter = std::make_unique<AudioParameterFloat>("Speed", "Speed", 0.01f, 20.f, 10.f);
     addParameter(mSpeedParameter.get());
 
-    period = 0.f;
+    mDryWetParameter = std::make_unique<AudioParameterFloat>("DryWet", "DryWet", 0.0f, 1.0f, 0.5f);
+    addParameter(mDryWetParameter.get());
+
+    mDepthParameter = std::make_unique<AudioParameterFloat>("Depth", "Depth", 0.0f, 1.0f, 0.5f);
+    addParameter(mDepthParameter.get());
+
+    period = 0.0f;
     smoothSpeedParam = mSpeedParameter->get();
 
 }
@@ -144,20 +150,21 @@ void TVRATremoloAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, 
     for (auto i = totalNumInputChannels; i < totalNumOutputChannels; ++i)
         buffer.clear (i, 0, buffer.getNumSamples());
 
-    auto* channelLeft = buffer.getWritePointer(0);
-    auto* channelRight = buffer.getWritePointer(1);
-
     for (size_t i = 0; i < buffer.getNumSamples(); i++)
     {
         smoothSpeedParam = smoothSpeedParam + 0.001 * (*mSpeedParameter - smoothSpeedParam);
-    
+
         period += juce::MathConstants<float>::twoPi * smoothSpeedParam / getSampleRate();
 
+        
         float lfo = sin(period);
-        float lfoMapped = jmap(lfo, -1.f, 1.f, 0.f, 1.f);
+        float lfoMapped = jmap(lfo, -1.f, 1.f, 1.f - (float)*mDepthParameter, 1.f);
 
-        channelLeft[i] *= lfoMapped;
-        channelRight[i] *= lfoMapped;
+        float leftOut = buffer.getSample(0, i) * (1 - *mDryWetParameter) + (buffer.getSample(0, i) * lfoMapped) * *mDryWetParameter;
+        float rightOut = buffer.getSample(1, i) * (1 - *mDryWetParameter) + (buffer.getSample(0, i) * lfoMapped) * *mDryWetParameter;
+
+        buffer.setSample(0, i, leftOut);
+        buffer.setSample(1, i, rightOut);
     }
 }
 

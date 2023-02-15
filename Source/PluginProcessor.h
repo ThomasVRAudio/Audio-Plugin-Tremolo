@@ -58,6 +58,9 @@ public:
 
 private:
     std::unique_ptr<AudioParameterFloat> mSpeedParameter;
+    std::unique_ptr<AudioParameterFloat> mDryWetParameter;
+    std::unique_ptr<AudioParameterFloat> mDepthParameter;
+
     double period;
     double smoothSpeedParam;
     //==============================================================================
