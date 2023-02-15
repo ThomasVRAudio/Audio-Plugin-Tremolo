@@ -30,8 +30,13 @@ TVRATremoloAudioProcessor::TVRATremoloAudioProcessor()
     mDepthParameter = std::make_unique<AudioParameterFloat>("Depth", "Depth", 0.0f, 1.0f, 0.5f);
     addParameter(mDepthParameter.get());
 
-    period = 0.0f;
+    mShapeParameter = std::make_unique<AudioParameterInt>("Shape", "Shape", 0, 2, 0);
+    addParameter(mShapeParameter.get());
+    
+    period = 0.0;
+    time = 0.0;
     smoothSpeedParam = mSpeedParameter->get();
+    smoothLFO = 0.0;
 
 }
 
@@ -104,7 +109,8 @@ void TVRATremoloAudioProcessor::changeProgramName (int index, const juce::String
 //==============================================================================
 void TVRATremoloAudioProcessor::prepareToPlay (double sampleRate, int samplesPerBlock)
 {
-    period = 0.f;
+    period = 0.0;
+    smoothLFO = 0.0;
 }
 
 void TVRATremoloAudioProcessor::releaseResources()
@@ -145,6 +151,7 @@ void TVRATremoloAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, 
     auto totalNumInputChannels  = getTotalNumInputChannels();
     auto totalNumOutputChannels = getTotalNumOutputChannels();
     
+    
 
     for (auto i = totalNumInputChannels; i < totalNumOutputChannels; ++i)
         buffer.clear (i, 0, buffer.getNumSamples());
@@ -155,12 +162,32 @@ void TVRATremoloAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, 
 
         period += juce::MathConstants<float>::twoPi * smoothSpeedParam / getSampleRate();
 
-        
-        float lfo = sin(period);
-        float lfoMapped = jmap(lfo, -1.f, 1.f, 1.f - (float)*mDepthParameter, 1.f);
+        float lfo;
+        float sine = sin(period);
+        float square = sine > 0 ? 1 : -1;
+
+        time += smoothSpeedParam / getSampleRate();
+
+        switch (*mShapeParameter) {
+        case 0:
+            lfo = sine;
+            break;
+        case 1:
+            lfo = sine > 0 ? 1: -1;
+            break;
+        case 2:
+            lfo = 4 * abs(time - floor(time + 1 / 2)) -1;
+            break;
+        default:
+            jassertfalse;
+            break;
+        }
+
+        smoothLFO = smoothLFO + 0.01 * (lfo - smoothLFO);
+        float lfoMapped = jmap((float)smoothLFO, -1.f, 1.f, 0.99f - (float)*mDepthParameter, 0.99f);
 
         float leftOut = buffer.getSample(0, i) * (1 - *mDryWetParameter) + (buffer.getSample(0, i) * lfoMapped) * *mDryWetParameter;
-        float rightOut = buffer.getSample(1, i) * (1 - *mDryWetParameter) + (buffer.getSample(0, i) * lfoMapped) * *mDryWetParameter;
+        float rightOut = buffer.getSample(1, i) * (1 - *mDryWetParameter) + (buffer.getSample(1, i) * lfoMapped) * *mDryWetParameter;
 
         buffer.setSample(0, i, leftOut);
         buffer.setSample(1, i, rightOut);

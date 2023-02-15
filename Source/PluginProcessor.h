@@ -61,8 +61,13 @@ private:
     std::unique_ptr<AudioParameterFloat> mDryWetParameter;
     std::unique_ptr<AudioParameterFloat> mDepthParameter;
 
+    std::unique_ptr<AudioParameterInt> mShapeParameter;
+    
+
     double period;
+    double time;
     double smoothSpeedParam;
+    double smoothLFO;
     //==============================================================================
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (TVRATremoloAudioProcessor)
 };

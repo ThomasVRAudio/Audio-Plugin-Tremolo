@@ -26,7 +26,8 @@ public:
 
 private:
     TVRATremoloAudioProcessor& audioProcessor;
-    void sliderSetup(Slider& slider, AudioParameterFloat* param, Label& label, float x = 0, float y = 0, float width = 20, float height = 100);
+    void sliderSetup(Slider& slider, AudioParameterFloat* param, Label& label, float x = 0.f, float y = 0.f, float width = 20.f, float height = 100.f);
+    void comboSetup(ComboBox& box, AudioParameterInt* param, float x = 0.f, float y = 0.f, float widht = 20.f, float height = 100.f);
     Slider mSpeedSlider;
     Slider mDryWetSlider;
     Slider mDepthSlider;
@@ -37,6 +38,14 @@ private:
 
     int xOffset;
     int yOffset;
+
+    ComboBox mShapeType;
+
+    StringArray mShapeTypeList = {
+        "Sine",
+        "Square",
+        "Triangle"
+    };
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (TVRATremoloAudioProcessorEditor)
 };

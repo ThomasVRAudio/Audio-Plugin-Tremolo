@@ -25,10 +25,15 @@ TVRATremoloAudioProcessorEditor::TVRATremoloAudioProcessorEditor (TVRATremoloAud
     AudioParameterFloat* speedParameter = (AudioParameterFloat*)params.getUnchecked(0);
     AudioParameterFloat* dryWetParameter = (AudioParameterFloat*)params.getUnchecked(1);
     AudioParameterFloat* depthParameter = (AudioParameterFloat*)params.getUnchecked(2);
+    AudioParameterInt* shapeParameter = (AudioParameterInt*)params.getUnchecked(3);
 
     sliderSetup(mSpeedSlider, speedParameter, speedLabel, xOffset + getLocalBounds().getWidth() / 4, yOffset);
     sliderSetup(mDryWetSlider, dryWetParameter, dryWetLabel, xOffset + 2.f * (getLocalBounds().getWidth() / 4), yOffset);
     sliderSetup(mDepthSlider, depthParameter, depthLabel, xOffset + 3.f * (getLocalBounds().getWidth() / 4), yOffset);
+
+    mShapeType.addItemList(mShapeTypeList,1);
+    comboSetup(mShapeType, shapeParameter, xOffset + getLocalBounds().getWidth() / 4, 200, 100, 20);
+
 }
 
 void TVRATremoloAudioProcessorEditor::sliderSetup(Slider& slider, AudioParameterFloat* param, Label &label, float x, float y, float width, float height) {
@@ -50,6 +55,15 @@ void TVRATremoloAudioProcessorEditor::sliderSetup(Slider& slider, AudioParameter
 
 }
 
+void TVRATremoloAudioProcessorEditor::comboSetup(ComboBox& box, AudioParameterInt* param, float x, float y, float width, float height) {
+    
+    box.setBounds(xOffset + getLocalBounds().getWidth() / 4, 200, 100, 20);
+    box.setSelectedItemIndex(0);
+    addAndMakeVisible(box);
+
+    box.onChange = [&box, param] { *param = box.getSelectedItemIndex(); };
+}
+
 TVRATremoloAudioProcessorEditor::~TVRATremoloAudioProcessorEditor()
 {
 }
@@ -58,7 +72,11 @@ TVRATremoloAudioProcessorEditor::~TVRATremoloAudioProcessorEditor()
 void TVRATremoloAudioProcessorEditor::paint (juce::Graphics& g)
 {
 
-    g.setGradientFill(juce::ColourGradient(juce::Colour(80, 89, 96), 0.f, 0.f, juce::Colour(124, 125, 114), (float)getLocalBounds().getWidth(), (float)getLocalBounds().getHeight(), false));
+    g.setGradientFill(juce::ColourGradient(juce::Colour(80, 89, 96), 0.f, 0.f, 
+                                           juce::Colour(124, 125, 114), 
+                                           (float)getLocalBounds().getWidth(), 
+                                           (float)getLocalBounds().getHeight(), 
+                                           false));
     g.fillAll();
     // (Our component is opaque, so we must completely fill the background with a solid colour)
     //g.fillAll (getLookAndFeel().findColour (juce::ResizableWindow::backgroundColourId));

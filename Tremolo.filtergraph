@@ -61,14 +61,14 @@
       </OUTPUTS>
     </LAYOUT>
   </FILTER>
-  <FILTER uid="7" x="0.51375" y="0.3024193548387097" useARA="0" uiLastX_Normal="105"
-          uiLastY_Normal="14" uiopen_Normal="0">
+  <FILTER uid="7" x="0.51375" y="0.3004032258064516" useARA="0" uiLastX_Normal="105"
+          uiLastY_Normal="14" uiopen_Normal="1">
     <PLUGIN name="AudioFilePlayer" format="VST3" category="Fx" manufacturer="Matkat Music LLC"
             version="1.0.0" file="C:\Program Files\Common Files\VST3\AudioFilePlayer.vst3\Contents\x86_64-win\AudioFilePlayer.vst3"
-            uniqueId="79fe81c" isInstrument="0" fileTime="1863cc044c1" infoUpdateTime="186547130eb"
+            uniqueId="79fe81c" isInstrument="0" fileTime="1863cc044c1" infoUpdateTime="18655b71cd4"
             numInputs="2" numOutputs="2" isShell="0" hasARAExtension="0"
             uid="e95d02c7"/>
-    <STATE>351.VMjLgXU....O+fWarAhckI2bo8la8HRLt.iHfTlai8FYo41Y8HRUTYTK3HxO9.BOVMEUy.Ea0cVZtMEcgQWY9vSRC8Vav8lak4Fc9DyM43BTIISX1UEaho2ZVkUdAAkKAwDUigWRWkEcQ0VTucmUY4BQ1YUQPolShUELhsVRxHlXQUjV0AiUXk2cEEUcMY0XyUEagoWSGc0PU0FVm0zUYYlKqIVcuYUVoEkLhIFLRsjYLAiVqEkLX4VPRszb1U0Tuc1QYU2XsElXiQ0XuE0UXgWPnQ0ZMESX3EkQHYWRWgUZQckVoUEaKMWPxvjKt3hKt3hKt3hKt3hKtQUUCUEQTg2ZrM1YQcUVDUjQicVPP4RPHQEY1UTLhkWPP4RPL4hKi4hKt3hKt3hKtXlTU0DUQAURWoULEYzXqEEUXoWQFwyKIMzasA2atUlaz4COuX0TTMCTrU2Yo41TzEFck4C.</STATE>
+    <STATE>346.VMjLgDU....O+fWarAhckI2bo8la8HRLt.iHfTlai8FYo41Y8HRUTYTK3HxO9.BOVMEUy.Ea0cVZtMEcgQWY9vSRC8Vav8lak4Fc9DyM03BTIISX1UEaho2ZVkUdAAkKAwDUigWRWkEcQ0VTucmUY4BQ1UUQPolShUELhsVRxHlXQUjV0AiUXk2cEEUcMY0XyUEagoWSGc0PU0FVm0zUYYlKqIVcuYUVoEkLhIFLRsjYLAiVqEkLX4VPRszb1U0Tuc1QYU2XsElXMQkVzUkUgcVTWoUZAIDU3UTLXo2Zwf0ZzHUX10zPt3hKt3hKt3hKt3hKtnTUv.UQAslXuk0UXoWUFE0YQcEVtPDTtHzZGI1YMIiXtPDTtLjKPcjKt3hKt3hKt3haTU0PUQDU3sFaicVTWkEQEYzXmEDOujzPu0Fbu4VYtQmO77hUSQ0LPwVcmklaSQWXzUlO..</STATE>
     <LAYOUT>
       <INPUTS>
         <BUS index="0" layout="L R"/>
@@ -78,14 +78,14 @@
       </OUTPUTS>
     </LAYOUT>
   </FILTER>
-  <FILTER uid="11" x="0.48625" y="0.5423387096774194" useARA="0" uiLastX_Normal="521"
-          uiLastY_Normal="307" uiopen_Normal="0">
+  <FILTER uid="11" x="0.50125" y="0.5080645161290323" useARA="0" uiLastX_Normal="654"
+          uiLastY_Normal="258" uiopen_Normal="1">
     <PLUGIN name="TVRA Tremolo" format="VST3" category="Fx" manufacturer="Thomas VR Audio"
             version="1.0.0" file="D:\Users\Thomas\Documents\C Programs\CPP\TVRA Tremolo\Builds\VisualStudio2022\x64\Debug\VST3\TVRA Tremolo.vst3\Contents\x86_64-win\TVRA Tremolo.vst3"
-            uniqueId="efa8e3e5" isInstrument="0" fileTime="186546fa854" infoUpdateTime="186547130ec"
+            uniqueId="efa8e3e5" isInstrument="0" fileTime="18655b4e8a6" infoUpdateTime="18655b71cd4"
             numInputs="2" numOutputs="2" isShell="0" hasARAExtension="0"
             uid="e9523af5"/>
-    <STATE>191.VMjLgXK....O+fWarAhckI2bo8la8HRLt.iHfTlai8FYo41Y8HRUTYTK3HxO9.BOVMEUy.Ea0cVZtMEcgQWY9vSRC8Vav8lak4Fc9XCLt3hKt3hKt3hKt3hYRUUSTEETIckVwTjQisVTTgkdEYjKAQjYPQSPWgUdMcjKAQjct3hdA4hKt3hKt3hKtnTUv.UQAslXuk0UXoWUFE0YQcEV77RRC8Vav8lak4Fc9vyKVMEUy.Ea0cVZtMEcgQWY9..</STATE>
+    <STATE>358.VMjLgzU....O+fWarAhckI2bo8la8HRLt.iHfTlai8FYo41Y8HRUTYTK3HxO9.BOVMEUy.Ea0cVZtMEcgQWY9vSRC8Vav8lak4Fc9DCNz3hUMoFSmwzQt3hKt7zJlcUXxEDZisVRxH1a3vVX3fjTLQmKogjYTwVXogiQY8FMwjENHIUUTkEUKMCR38TNtHzSTkzUYMGNFEVcAITT3slLUsVTW8DZtj1RvvzTNQiZS4DMXMESyPUdLYGR40TdHIDRDUkQho2YV8DZDk1R1gjPHMUPWk0ZQY0SnwTZKICUS4DMpMkSzn1PLoGV4wDdTkWSncCZO4hKt3hKt3hKt3hKtnTUv.UQAslXuk0UXoWUFE0YQcEVtPDTtHzZGI1YMIiXtPDTtLjKPcjKt3hKt3hKt3haTU0PUQDU3sFaicVTWkEQEYzXmEDOujzPu0Fbu4VYtQmO77hUSQ0LPwVcmklaSQWXzUlO..</STATE>
     <LAYOUT>
       <INPUTS>
         <BUS index="0" layout="L R"/>
