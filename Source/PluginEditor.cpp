@@ -18,16 +18,20 @@ TVRATremoloAudioProcessorEditor::TVRATremoloAudioProcessorEditor (TVRATremoloAud
     setSize (400, 300);
 
     auto params = audioProcessor.getParameters();
-    
+
+    xOffset = -20;
+    yOffset = 0;
+
     AudioParameterFloat* speedParameter = (AudioParameterFloat*)params.getUnchecked(0);
     AudioParameterFloat* dryWetParameter = (AudioParameterFloat*)params.getUnchecked(1);
     AudioParameterFloat* depthParameter = (AudioParameterFloat*)params.getUnchecked(2);
-    sliderSetup(mSpeedSlider, speedParameter, 0,0);
-    sliderSetup(mDryWetSlider, dryWetParameter, 100, 0);
-    sliderSetup(mDepthSlider, depthParameter, 200, 0);
+
+    sliderSetup(mSpeedSlider, speedParameter, speedLabel, xOffset + getLocalBounds().getWidth() / 4, yOffset);
+    sliderSetup(mDryWetSlider, dryWetParameter, dryWetLabel, xOffset + 2.f * (getLocalBounds().getWidth() / 4), yOffset);
+    sliderSetup(mDepthSlider, depthParameter, depthLabel, xOffset + 3.f * (getLocalBounds().getWidth() / 4), yOffset);
 }
 
-void TVRATremoloAudioProcessorEditor::sliderSetup(Slider& slider, AudioParameterFloat* param, float x, float y, float width, float height) {
+void TVRATremoloAudioProcessorEditor::sliderSetup(Slider& slider, AudioParameterFloat* param, Label &label, float x, float y, float width, float height) {
     slider.setBounds(x, y, width, height);
     slider.setRange(param->range.start, param->range.end);
     slider.setValue(param->get());
@@ -38,6 +42,12 @@ void TVRATremoloAudioProcessorEditor::sliderSetup(Slider& slider, AudioParameter
     slider.onValueChange = [&slider, param] { *param = slider.getValue(); };
     slider.onDragStart = [&slider, param] { param->beginChangeGesture(); };
     slider.onDragEnd = [&slider, param] { param->endChangeGesture(); };
+
+    label.setText(param->getParameterID(), dontSendNotification);
+    label.attachToComponent(&slider, true);
+    label.setColour(label.textColourId, juce::Colour(242, 243, 241));
+    addAndMakeVisible(label);
+
 }
 
 TVRATremoloAudioProcessorEditor::~TVRATremoloAudioProcessorEditor()
@@ -47,11 +57,13 @@ TVRATremoloAudioProcessorEditor::~TVRATremoloAudioProcessorEditor()
 //==============================================================================
 void TVRATremoloAudioProcessorEditor::paint (juce::Graphics& g)
 {
-    // (Our component is opaque, so we must completely fill the background with a solid colour)
-    g.fillAll (getLookAndFeel().findColour (juce::ResizableWindow::backgroundColourId));
 
-    g.setColour (juce::Colours::white);
-    g.setFont (15.0f);
+    g.setGradientFill(juce::ColourGradient(juce::Colour(80, 89, 96), 0.f, 0.f, juce::Colour(124, 125, 114), (float)getLocalBounds().getWidth(), (float)getLocalBounds().getHeight(), false));
+    g.fillAll();
+    // (Our component is opaque, so we must completely fill the background with a solid colour)
+    //g.fillAll (getLookAndFeel().findColour (juce::ResizableWindow::backgroundColourId));
+    g.setColour (juce::Colour(242, 243, 241));
+    g.setFont (25.0f);
     g.drawFittedText ("TVRA Tremolo", getLocalBounds(), juce::Justification::centred, 1);
 }
 

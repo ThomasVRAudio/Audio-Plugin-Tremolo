@@ -24,7 +24,6 @@ TVRATremoloAudioProcessor::TVRATremoloAudioProcessor()
 {
     mSpeedParameter = std::make_unique<AudioParameterFloat>("Speed", "Speed", 0.01f, 20.f, 10.f);
     addParameter(mSpeedParameter.get());
-
     mDryWetParameter = std::make_unique<AudioParameterFloat>("DryWet", "DryWet", 0.0f, 1.0f, 0.5f);
     addParameter(mDryWetParameter.get());
 
@@ -182,15 +181,22 @@ juce::AudioProcessorEditor* TVRATremoloAudioProcessor::createEditor()
 //==============================================================================
 void TVRATremoloAudioProcessor::getStateInformation (juce::MemoryBlock& destData)
 {
-    // You should use this method to store your parameters in the memory block.
-    // You could do that either as raw data, or use the XML or ValueTree classes
-    // as intermediaries to make it easy to save and load complex data.
+    std::unique_ptr<XmlElement> xml(new XmlElement("Tremolo"));
+    xml->setAttribute("DryWet", *mDryWetParameter);
+    xml->setAttribute("Depth", *mDepthParameter);
+    xml->setAttribute("Speed", *mSpeedParameter);
+    copyXmlToBinary(*xml, destData);
 }
 
 void TVRATremoloAudioProcessor::setStateInformation (const void* data, int sizeInBytes)
 {
-    // You should use this method to restore your parameters from this memory block,
-    // whose contents will have been created by the getStateInformation() call.
+    std::unique_ptr<XmlElement> xml = getXmlFromBinary(data, sizeInBytes);
+
+    if (xml.get() != nullptr && xml->hasTagName("Tremolo")) {
+        *mDryWetParameter = xml->getDoubleAttribute("DryWet");
+        *mDepthParameter = xml->getDoubleAttribute("Depth");
+        *mSpeedParameter = xml->getDoubleAttribute("Speed");
+    }
 }
 
 //==============================================================================
