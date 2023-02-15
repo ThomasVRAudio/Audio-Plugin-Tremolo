@@ -33,15 +33,9 @@ TVRATremoloAudioProcessorEditor::TVRATremoloAudioProcessorEditor (TVRATremoloAud
 
     mShapeType.addItemList(mShapeTypeList,1);
     comboSetup(mShapeType, shapeParameter, xOffset + getLocalBounds().getWidth() / 4, 200, 100, 20);
-
-    mSpeedSlider.setupMouseEvent(*this, audioProcessor, speedParameter->getParameterIndex());
-    mDryWetSlider.setupMouseEvent(*this, audioProcessor, dryWetParameter->getParameterIndex());
-    mDepthSlider.setupMouseEvent(*this, audioProcessor, depthParameter->getParameterIndex());
-
-
 }
 
-void TVRATremoloAudioProcessorEditor::sliderSetup(Slider& slider, AudioParameterFloat* param, Label &label, float x, float y, float width, float height) {
+void TVRATremoloAudioProcessorEditor::sliderSetup(SliderWithMenu& slider, AudioParameterFloat* param, Label &label, float x, float y, float width, float height) {
     slider.setBounds(x, y, width, height);
     slider.setRange(param->range.start, param->range.end);
     slider.setValue(param->get());
@@ -58,6 +52,7 @@ void TVRATremoloAudioProcessorEditor::sliderSetup(Slider& slider, AudioParameter
     label.setColour(label.textColourId, juce::Colour(242, 243, 241));
     addAndMakeVisible(label);
 
+    slider.setupMouseEvent(*this, audioProcessor, param->getParameterIndex());
 }
 
 void TVRATremoloAudioProcessorEditor::comboSetup(ComboBox& box, AudioParameterInt* param, float x, float y, float width, float height) {
