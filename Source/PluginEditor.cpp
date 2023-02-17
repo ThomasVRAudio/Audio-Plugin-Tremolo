@@ -11,7 +11,10 @@
 
 //==============================================================================
 TVRATremoloAudioProcessorEditor::TVRATremoloAudioProcessorEditor (TVRATremoloAudioProcessor& p)
-    : AudioProcessorEditor (&p), audioProcessor (p), positionLabel{audioProcessor.currentPlayHeadPosition}
+    : AudioProcessorEditor (&p), 
+    audioProcessor (p), 
+    positionLabel{audioProcessor.currentPlayHeadPosition}, 
+    quarterNoteLabel{audioProcessor.quarterNotePosition}
 {
     // Make sure that before the constructor has finished, you've set the
     // editor's size to whatever you need it to be.
@@ -20,6 +23,8 @@ TVRATremoloAudioProcessorEditor::TVRATremoloAudioProcessorEditor (TVRATremoloAud
 
     addAndMakeVisible(positionLabel);
     positionLabel.setBounds(300,200,100,100);
+    addAndMakeVisible(quarterNoteLabel);
+    quarterNoteLabel.setBounds(200, 200, 100, 100);
 
 
     auto params = audioProcessor.getParameters();

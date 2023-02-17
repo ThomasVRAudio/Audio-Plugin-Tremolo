@@ -54,6 +54,7 @@ private:
     };
 
     AtomicLabel positionLabel;
+    AtomicLabel quarterNoteLabel;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (TVRATremoloAudioProcessorEditor)
 };

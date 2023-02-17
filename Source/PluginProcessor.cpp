@@ -44,10 +44,7 @@ TVRATremoloAudioProcessor::TVRATremoloAudioProcessor()
     BPM = 0.0f;
     syncSpeed = 0.0f;
 
-    samplesInMinutes = 0.0;
     mSyncToggle = false;
-
-    mLfoPositions = nullptr;
 }
 
 TVRATremoloAudioProcessor::~TVRATremoloAudioProcessor()
@@ -123,19 +120,13 @@ void TVRATremoloAudioProcessor::prepareToPlay (double sampleRate, int samplesPer
     period = 0.0;
     smoothLFO = 0.0;
 
-    samplesInMinutes = sampleRate * 60.0;
-
+    samplesInMinutes = sampleRate * 60;
+    mPpqPositions.resize(samplesPerBlock); //block of 480
+    
     if (mLfoPositions == nullptr) {
-        mLfoPositions = new float[sampleRate];
-        zeromem(mLfoPositions, sampleRate);
+        mLfoPositions = new float[samplesPerBlock];
+        zeromem(mLfoPositions, samplesPerBlock);
     }
-
-    //mLfoPositions.resize(samplesPerBlock);
-
-    //for (auto &pos : mLfoPositions)
-    //{
-    //    pos = 0.f;
-    //}
  
 }
 
@@ -181,8 +172,12 @@ void TVRATremoloAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, 
 
     for (auto i = totalNumInputChannels; i < totalNumOutputChannels; ++i)
         buffer.clear (i, 0, buffer.getNumSamples());
-    
-    int offset = 0;
+
+    // ---- new stuff (start)
+    auto ppqPerSample = GetPPQPerSample();
+    double offset = 0.0;
+    double timeOffset = 0.0;
+    // ---- new stuff (end)
 
 
     for (size_t i = 0; i < buffer.getNumSamples(); i++)
@@ -193,10 +188,11 @@ void TVRATremoloAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, 
         period += juce::MathConstants<float>::twoPi * smoothSpeedParam / getSampleRate();
 
         float lfo;
-        float sine = sin(period);
+        float sine = sin(period + phaseOffset); // + phaseOffset, always starts at 0
         float square = sine > 0 ? 1 : -1;
 
         time += smoothSpeedParam / getSampleRate();
+        timeOffset += 1.0 / getSampleRate();
 
         switch (*mShapeParameter) {
         case 0:
@@ -218,24 +214,25 @@ void TVRATremoloAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, 
 
 
         updateCurrentTimeInfoFromHost();
+        // --- new stuff (begin)
+        offset += ppqPerSample;
+        mPpqPositions[i] = mPlayHeadInfo.ppqPosition + offset;
 
-        if (mSyncToggle && mPlayHeadInfo.isPlaying)
-        {
-            if (fmod(mPlayHeadInfo.ppqPosition, 1.0) == 0.0) {
-                offset = i;
-            }
+        auto relativePosition = fmod(mPpqPositions[i], 1.0); 
+        currentPlayHeadPosition.store(relativePosition);
+
+        if (relativePosition <= ppqPerSample) { 
+            phaseOffset = -period; 
+            float sineTest = sin(period + phaseOffset);
+            quarterNotePosition.store(debugNum++);
         }
 
-        mLfoPositions[i] = lfoMapped;
+        
 
-        if (i - offset < 0)
-            offset += getSampleRate();
+        // --- new stuff (end)
 
-
-        auto outLFO = mSyncToggle ? mLfoPositions[i - offset] : lfoMapped;
-
-        float leftOut = buffer.getSample(0, i) * (1 - *mDryWetParameter) + (buffer.getSample(0, i) * outLFO) * *mDryWetParameter;
-        float rightOut = buffer.getSample(1, i) * (1 - *mDryWetParameter) + (buffer.getSample(1, i) * outLFO) * *mDryWetParameter;
+        float leftOut = buffer.getSample(0, i) * (1 - *mDryWetParameter) + (buffer.getSample(0, i) * lfoMapped) * *mDryWetParameter;
+        float rightOut = buffer.getSample(1, i) * (1 - *mDryWetParameter) + (buffer.getSample(1, i) * lfoMapped) * *mDryWetParameter;
 
         buffer.setSample(0, i, leftOut);
         buffer.setSample(1, i, rightOut);
@@ -248,9 +245,16 @@ void TVRATremoloAudioProcessor::updateCurrentTimeInfoFromHost()
 
         if (ph->getCurrentPosition(mPlayHeadInfo)) {
             BPM = mPlayHeadInfo.bpm;
-            currentPlayHeadPosition.store(mPlayHeadInfo.ppqPosition);
+            //currentPlayHeadPosition.store(mPlayHeadInfo.ppqPosition);
         }
     }
+}
+
+double TVRATremoloAudioProcessor::GetPPQPerSample() const {
+
+    auto samplesPerBeat = samplesInMinutes / mPlayHeadInfo.bpm;
+    return 1.0 / samplesPerBeat; // calculate musical timing in 1 sample
+
 }
 
 //==============================================================================
