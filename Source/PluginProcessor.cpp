@@ -173,10 +173,9 @@ void TVRATremoloAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, 
     for (auto i = totalNumInputChannels; i < totalNumOutputChannels; ++i)
         buffer.clear (i, 0, buffer.getNumSamples());
 
-    // ---- new stuff (start)
+
     auto ppqPerSample = GetPPQPerSample();
     double offset = 0.0;
-    // ---- new stuff (end)
 
 
     for (size_t i = 0; i < buffer.getNumSamples(); i++)
@@ -215,7 +214,7 @@ void TVRATremoloAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, 
 
 
         updateCurrentTimeInfoFromHost();
-        // --- new stuff (begin)
+
         offset += ppqPerSample;
         mPpqPositions[i] = mPlayHeadInfo.ppqPosition + offset;
 
@@ -223,12 +222,7 @@ void TVRATremoloAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, 
 
         if (relativePosition <= ppqPerSample) { 
             phaseOffset = -period; 
-            //quarterNotePosition.store(mPlayHeadInfo.ppqPosition);
         }
-
-        
-
-        // --- new stuff (end)
 
         float leftOut = buffer.getSample(0, i) * (1 - *mDryWetParameter) + (buffer.getSample(0, i) * lfoMapped) * *mDryWetParameter;
         float rightOut = buffer.getSample(1, i) * (1 - *mDryWetParameter) + (buffer.getSample(1, i) * lfoMapped) * *mDryWetParameter;

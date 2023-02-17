@@ -12,19 +12,19 @@
 //==============================================================================
 TVRATremoloAudioProcessorEditor::TVRATremoloAudioProcessorEditor (TVRATremoloAudioProcessor& p)
     : AudioProcessorEditor (&p), 
-    audioProcessor (p), 
-    positionLabel{audioProcessor.currentPlayHeadPosition}, 
-    quarterNoteLabel{audioProcessor.quarterNotePosition}
+    audioProcessor (p)
+    //positionLabel{audioProcessor.currentPlayHeadPosition}, 
+    //quarterNoteLabel{audioProcessor.quarterNotePosition}
 {
     // Make sure that before the constructor has finished, you've set the
     // editor's size to whatever you need it to be.
     setSize (400, 300);
 
 
-    addAndMakeVisible(positionLabel);
-    positionLabel.setBounds(300,200,100,100);
-    addAndMakeVisible(quarterNoteLabel);
-    quarterNoteLabel.setBounds(200, 200, 100, 100);
+    //addAndMakeVisible(positionLabel);
+    //positionLabel.setBounds(300,200,100,100);
+    //addAndMakeVisible(quarterNoteLabel);
+    //quarterNoteLabel.setBounds(200, 200, 100, 100);
 
 
     auto params = audioProcessor.getParameters();
@@ -70,7 +70,6 @@ TVRATremoloAudioProcessorEditor::TVRATremoloAudioProcessorEditor (TVRATremoloAud
         };
 
     };
-    //sliderSetup(mSyncMenuSlider, syncParameter, syncLabel, 300, 150, 75, 75);
 }
 
 void TVRATremoloAudioProcessorEditor::sliderSetup(SliderWithMenu& slider, AudioParameterFloat* param, Label &label, float x, float y, float width, float height) {
