@@ -84,7 +84,6 @@ private:
     juce::AudioPlayHead::CurrentPositionInfo mPlayHeadInfo;
 
     float* mLfoPositions{ nullptr };
-
     double phaseOffset{ 0.0 };
 
     //==============================================================================

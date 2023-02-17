@@ -176,23 +176,24 @@ void TVRATremoloAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, 
     // ---- new stuff (start)
     auto ppqPerSample = GetPPQPerSample();
     double offset = 0.0;
-    double timeOffset = 0.0;
     // ---- new stuff (end)
 
 
     for (size_t i = 0; i < buffer.getNumSamples(); i++)
     {
+        if (mSyncToggle)
+            setSyncAmount();
+
         float speed = mSyncToggle ? syncSpeed : *mSpeedParameter;
         smoothSpeedParam = smoothSpeedParam + 0.001 * (speed - smoothSpeedParam);
 
         period += juce::MathConstants<float>::twoPi * smoothSpeedParam / getSampleRate();
 
         float lfo;
-        float sine = sin(period + phaseOffset); // + phaseOffset, always starts at 0
+        float sine = sin(period + phaseOffset); 
         float square = sine > 0 ? 1 : -1;
 
         time += smoothSpeedParam / getSampleRate();
-        timeOffset += 1.0 / getSampleRate();
 
         switch (*mShapeParameter) {
         case 0:
@@ -219,12 +220,10 @@ void TVRATremoloAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, 
         mPpqPositions[i] = mPlayHeadInfo.ppqPosition + offset;
 
         auto relativePosition = fmod(mPpqPositions[i], 1.0); 
-        currentPlayHeadPosition.store(relativePosition);
 
         if (relativePosition <= ppqPerSample) { 
             phaseOffset = -period; 
-            float sineTest = sin(period + phaseOffset);
-            quarterNotePosition.store(debugNum++);
+            //quarterNotePosition.store(mPlayHeadInfo.ppqPosition);
         }
 
         
@@ -245,7 +244,7 @@ void TVRATremoloAudioProcessor::updateCurrentTimeInfoFromHost()
 
         if (ph->getCurrentPosition(mPlayHeadInfo)) {
             BPM = mPlayHeadInfo.bpm;
-            //currentPlayHeadPosition.store(mPlayHeadInfo.ppqPosition);
+            currentPlayHeadPosition.store(mPlayHeadInfo.ppqPosition);
         }
     }
 }
