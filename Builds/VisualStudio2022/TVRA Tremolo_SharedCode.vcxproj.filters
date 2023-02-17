@@ -2910,6 +2910,9 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\Source\AtomicLabel.h">
+      <Filter>TVRA Tremolo\Source</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\Source\SliderWithMenu.h">
       <Filter>TVRA Tremolo\Source</Filter>
     </ClInclude>

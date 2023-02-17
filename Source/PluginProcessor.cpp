@@ -248,6 +248,7 @@ void TVRATremoloAudioProcessor::updateCurrentTimeInfoFromHost()
 
         if (ph->getCurrentPosition(mPlayHeadInfo)) {
             BPM = mPlayHeadInfo.bpm;
+            currentPlayHeadPosition.store(mPlayHeadInfo.ppqPosition);
         }
     }
 }

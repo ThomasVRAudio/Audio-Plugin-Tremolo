@@ -89,4 +89,7 @@ public:
     bool getSync();
     void setSync(bool isSynced);
     void setSyncAmount();
+
+    std::atomic<double> currentPlayHeadPosition{ 0 };
+
 };

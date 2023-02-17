@@ -11,11 +11,16 @@
 
 //==============================================================================
 TVRATremoloAudioProcessorEditor::TVRATremoloAudioProcessorEditor (TVRATremoloAudioProcessor& p)
-    : AudioProcessorEditor (&p), audioProcessor (p)
+    : AudioProcessorEditor (&p), audioProcessor (p), positionLabel{audioProcessor.currentPlayHeadPosition}
 {
     // Make sure that before the constructor has finished, you've set the
     // editor's size to whatever you need it to be.
     setSize (400, 300);
+
+
+    addAndMakeVisible(positionLabel);
+    positionLabel.setBounds(300,200,100,100);
+
 
     auto params = audioProcessor.getParameters();
 
@@ -131,7 +136,7 @@ void TVRATremoloAudioProcessorEditor::paint (juce::Graphics& g)
     //g.fillAll (getLookAndFeel().findColour (juce::ResizableWindow::backgroundColourId));
     g.setColour (juce::Colour(242, 243, 241));
     g.setFont (25.0f);
-    g.drawFittedText ("TVRA Tremolo", getLocalBounds(), juce::Justification::centred, 1);
+    //g.drawFittedText ("TVRA Tremolo", getLocalBounds(), juce::Justification::centred, 1);
 }
 
 void TVRATremoloAudioProcessorEditor::resized()

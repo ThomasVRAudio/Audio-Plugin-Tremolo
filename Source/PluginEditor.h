@@ -11,6 +11,7 @@
 #include <JuceHeader.h>
 #include "PluginProcessor.h"
 #include "SliderWithMenu.h"
+#include "AtomicLabel.h"
 
 //==============================================================================
 /**
@@ -35,7 +36,6 @@ private:
     SliderWithMenu mDryWetSlider;
     SliderWithMenu mDepthSlider;
 
-    //SliderWithMenu mSyncMenuSlider;
     std::unique_ptr<ToggleButton> mSyncButton;
     Label speedLabel;
     Label dryWetLabel;
@@ -53,5 +53,9 @@ private:
         "Triangle"
     };
 
+    AtomicLabel positionLabel;
+
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (TVRATremoloAudioProcessorEditor)
 };
+
+

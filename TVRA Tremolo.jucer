@@ -5,6 +5,7 @@
               companyEmail="info@thomasvraudio.com" companyName="Thomas VR Audio">
   <MAINGROUP id="q0oHs4" name="TVRA Tremolo">
     <GROUP id="{1CCE8C16-D34C-D1AF-4CDC-6FB1FC110DEB}" name="Source">
+      <FILE id="edFe0E" name="AtomicLabel.h" compile="0" resource="0" file="Source/AtomicLabel.h"/>
       <FILE id="iVdvLx" name="SliderWithMenu.cpp" compile="1" resource="0"
             file="Source/SliderWithMenu.cpp"/>
       <FILE id="Z95b00" name="SliderWithMenu.h" compile="0" resource="0"
