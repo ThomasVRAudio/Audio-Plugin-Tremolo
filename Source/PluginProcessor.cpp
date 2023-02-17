@@ -24,6 +24,7 @@ TVRATremoloAudioProcessor::TVRATremoloAudioProcessor()
 {
     mSpeedParameter = std::make_unique<AudioParameterFloat>("Speed", "Speed", 0.01f, 20.f, 10.f);
     addParameter(mSpeedParameter.get());
+
     mDryWetParameter = std::make_unique<AudioParameterFloat>("DryWet", "DryWet", 0.0f, 1.0f, 0.5f);
     addParameter(mDryWetParameter.get());
 
@@ -32,16 +33,26 @@ TVRATremoloAudioProcessor::TVRATremoloAudioProcessor()
 
     mShapeParameter = std::make_unique<AudioParameterInt>("Shape", "Shape", 0, 2, 0);
     addParameter(mShapeParameter.get());
+
+    mSyncParameter = std::make_unique<AudioParameterInt>("Sync", "Sync", 0, 10, 0);
+    addParameter(mSyncParameter.get());
     
     period = 0.0;
     time = 0.0;
     smoothSpeedParam = mSpeedParameter->get();
     smoothLFO = 0.0;
+    BPM = 0.0f;
+    syncSpeed = 0.0f;
 
+    samplesInMinutes = 0.0;
+    mSyncToggle = false;
+
+    mLfoPositions = nullptr;
 }
 
 TVRATremoloAudioProcessor::~TVRATremoloAudioProcessor()
 {
+    delete[] mLfoPositions;
 }
 
 //==============================================================================
@@ -111,6 +122,21 @@ void TVRATremoloAudioProcessor::prepareToPlay (double sampleRate, int samplesPer
 {
     period = 0.0;
     smoothLFO = 0.0;
+
+    samplesInMinutes = sampleRate * 60.0;
+
+    if (mLfoPositions == nullptr) {
+        mLfoPositions = new float[sampleRate];
+        zeromem(mLfoPositions, sampleRate);
+    }
+
+    //mLfoPositions.resize(samplesPerBlock);
+
+    //for (auto &pos : mLfoPositions)
+    //{
+    //    pos = 0.f;
+    //}
+ 
 }
 
 void TVRATremoloAudioProcessor::releaseResources()
@@ -155,10 +181,14 @@ void TVRATremoloAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, 
 
     for (auto i = totalNumInputChannels; i < totalNumOutputChannels; ++i)
         buffer.clear (i, 0, buffer.getNumSamples());
+    
+    int offset = 0;
+
 
     for (size_t i = 0; i < buffer.getNumSamples(); i++)
     {
-        smoothSpeedParam = smoothSpeedParam + 0.001 * (*mSpeedParameter - smoothSpeedParam);
+        float speedMultiplier = mSyncToggle ? syncSpeed : *mSpeedParameter;
+        smoothSpeedParam = smoothSpeedParam + 0.001 * (speedMultiplier - smoothSpeedParam);
 
         period += juce::MathConstants<float>::twoPi * smoothSpeedParam / getSampleRate();
 
@@ -186,11 +216,39 @@ void TVRATremoloAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, 
         smoothLFO = smoothLFO + 0.01 * (lfo - smoothLFO);
         float lfoMapped = jmap((float)smoothLFO, -1.f, 1.f, 0.99f - (float)*mDepthParameter, 0.99f);
 
-        float leftOut = buffer.getSample(0, i) * (1 - *mDryWetParameter) + (buffer.getSample(0, i) * lfoMapped) * *mDryWetParameter;
-        float rightOut = buffer.getSample(1, i) * (1 - *mDryWetParameter) + (buffer.getSample(1, i) * lfoMapped) * *mDryWetParameter;
+
+        updateCurrentTimeInfoFromHost();
+
+        if (mSyncToggle && mPlayHeadInfo.isPlaying)
+        {
+            if (fmod(mPlayHeadInfo.ppqPosition, 1.0) == 0.0) {
+                offset = i;
+            }
+        }
+
+        mLfoPositions[i] = lfoMapped;
+
+        if (i - offset < 0)
+            offset += getSampleRate();
+
+
+        auto outLFO = mSyncToggle ? mLfoPositions[i - offset] : lfoMapped;
+
+        float leftOut = buffer.getSample(0, i) * (1 - *mDryWetParameter) + (buffer.getSample(0, i) * outLFO) * *mDryWetParameter;
+        float rightOut = buffer.getSample(1, i) * (1 - *mDryWetParameter) + (buffer.getSample(1, i) * outLFO) * *mDryWetParameter;
 
         buffer.setSample(0, i, leftOut);
         buffer.setSample(1, i, rightOut);
+    }
+}
+
+void TVRATremoloAudioProcessor::updateCurrentTimeInfoFromHost()
+{
+    if (AudioPlayHead* ph = getPlayHead()) {
+
+        if (ph->getCurrentPosition(mPlayHeadInfo)) {
+            BPM = mPlayHeadInfo.bpm;
+        }
     }
 }
 
@@ -231,4 +289,59 @@ void TVRATremoloAudioProcessor::setStateInformation (const void* data, int sizeI
 juce::AudioProcessor* JUCE_CALLTYPE createPluginFilter()
 {
     return new TVRATremoloAudioProcessor();
+}
+
+bool TVRATremoloAudioProcessor::getSync() {
+    return mSyncToggle;
+}
+
+void TVRATremoloAudioProcessor::setSync(bool isSynced) {
+    mSyncToggle = isSynced;
+}
+
+void TVRATremoloAudioProcessor::setSyncAmount()
+{
+
+    if (BPM != 0 && mSyncToggle) {
+        float BPS = BPM / 60;
+        switch ((int)*mSpeedParameter)
+        {
+        case 0: // 16/1
+            syncSpeed = BPS / 64;
+            break;
+        case 1: // 8/1
+            syncSpeed = BPS / 32;
+            break;
+        case 2: // 4/1
+            syncSpeed = BPS / 16;
+            break; 
+        case 3: // 2/1
+            syncSpeed = BPS / 8;
+            break; 
+        case 4: // 1/1
+            syncSpeed = BPS / 4;
+            break; 
+        case 5: // 1/2
+            syncSpeed = BPS / 2;
+            break; 
+        case 6: // 1/4
+            syncSpeed = BPS;
+            break;
+        case 7: // 1/8
+            syncSpeed = BPS / 0.5f;
+            break;
+        case 8: // 1/16
+            syncSpeed = BPS / 0.25f;
+            break;
+        case 9: // 1/32
+            syncSpeed = BPS / 0.125f;
+            break;
+        case 10: // 1/64
+            syncSpeed = BPS / 0.0625f;
+            break;
+        default:
+            jassertfalse;
+            break;
+        }
+    }
 }

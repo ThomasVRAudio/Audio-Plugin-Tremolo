@@ -57,17 +57,36 @@ public:
     void setStateInformation (const void* data, int sizeInBytes) override;
 
 private:
+    void updateCurrentTimeInfoFromHost();
+
     std::unique_ptr<AudioParameterFloat> mSpeedParameter;
     std::unique_ptr<AudioParameterFloat> mDryWetParameter;
     std::unique_ptr<AudioParameterFloat> mDepthParameter;
 
     std::unique_ptr<AudioParameterInt> mShapeParameter;
-    
+    std::unique_ptr<AudioParameterInt> mSyncParameter;
 
+    float BPM;
+    float syncSpeed;
+    bool mSyncToggle;
+    
+    
     double period;
     double time;
     double smoothSpeedParam;
     double smoothLFO;
+
+    // Tempo Sync
+    double samplesInMinutes;
+    float *mLfoPositions;
+    juce::AudioPlayHead::CurrentPositionInfo mPlayHeadInfo;
+    float debugNum = 0;
+
     //==============================================================================
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (TVRATremoloAudioProcessor)
+
+public:
+    bool getSync();
+    void setSync(bool isSynced);
+    void setSyncAmount();
 };
