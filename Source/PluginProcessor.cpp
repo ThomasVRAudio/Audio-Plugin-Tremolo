@@ -187,8 +187,8 @@ void TVRATremoloAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, 
 
     for (size_t i = 0; i < buffer.getNumSamples(); i++)
     {
-        float speedMultiplier = mSyncToggle ? syncSpeed : *mSpeedParameter;
-        smoothSpeedParam = smoothSpeedParam + 0.001 * (speedMultiplier - smoothSpeedParam);
+        float speed = mSyncToggle ? syncSpeed : *mSpeedParameter;
+        smoothSpeedParam = smoothSpeedParam + 0.001 * (speed - smoothSpeedParam);
 
         period += juce::MathConstants<float>::twoPi * smoothSpeedParam / getSampleRate();
 
