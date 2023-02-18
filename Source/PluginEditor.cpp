@@ -41,6 +41,8 @@ TVRATremoloAudioProcessorEditor::TVRATremoloAudioProcessorEditor (TVRATremoloAud
     AudioParameterFloat* depthLFOParameter = (AudioParameterFloat*)params.getUnchecked(6);
 
     AudioParameterFloat* speedLFODepthParameter = (AudioParameterFloat*)params.getUnchecked(7);
+    AudioParameterFloat* dryWetLFODepthParameter = (AudioParameterFloat*)params.getUnchecked(8);
+    AudioParameterFloat* depthLFODepthParameter = (AudioParameterFloat*)params.getUnchecked(9);
 
     sliderSetup(mSpeedSlider, speedParameter, mXOffset + getLocalBounds().getWidth() / 4, mYOffset);
     sliderSetup(mDryWetSlider, dryWetParameter, mXOffset + 2 * (getLocalBounds().getWidth() / 4), mYOffset);
@@ -55,6 +57,8 @@ TVRATremoloAudioProcessorEditor::TVRATremoloAudioProcessorEditor (TVRATremoloAud
     sliderSetup(mDepthLFOKnob, speedLFOParameter, mXOffset + 3 * getLocalBounds().getWidth() / 4 + mKnobOffset, 100, 40, 40, Slider::SliderStyle::RotaryVerticalDrag);
 
     sliderSetup(mSpeedLFODepthKnob, speedLFODepthParameter, mXOffset + getLocalBounds().getWidth() / 4 + mKnobOffset, 150, 40, 40, Slider::SliderStyle::RotaryVerticalDrag);
+    sliderSetup(mDryWetLFODepthKnob, dryWetLFODepthParameter, mXOffset + 2 * getLocalBounds().getWidth() / 4 + mKnobOffset, 150, 40, 40, Slider::SliderStyle::RotaryVerticalDrag);
+    sliderSetup(mDepthLFODepthKnob, depthLFODepthParameter, mXOffset + 3 * getLocalBounds().getWidth() / 4 + mKnobOffset, 150, 40, 40, Slider::SliderStyle::RotaryVerticalDrag);
 
     mShapeType.addItemList(mShapeTypeList,1);
     comboSetup(mShapeType, shapeParameter);

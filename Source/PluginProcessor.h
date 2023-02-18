@@ -70,6 +70,8 @@ private:
     AudioParameterFloat* mDepthLFOParameter;
 
     AudioParameterFloat* mSpeedLFODepthParameter;
+    AudioParameterFloat* mDryWetLFODepthParameter;
+    AudioParameterFloat* mDepthLFODepthParameter;
 
     float mBPM;
     float mSyncSpeed;

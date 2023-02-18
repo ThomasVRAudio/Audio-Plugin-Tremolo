@@ -47,6 +47,8 @@ private:
     SliderWithMenu mDepthLFOKnob;
 
     SliderWithMenu mSpeedLFODepthKnob;
+    SliderWithMenu mDryWetLFODepthKnob;
+    SliderWithMenu mDepthLFODepthKnob;
 
     std::unique_ptr<ToggleButton> mSyncButton;
     Label mSpeedLabel;

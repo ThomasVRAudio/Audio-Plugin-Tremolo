@@ -33,6 +33,8 @@ TVRATremoloAudioProcessor::TVRATremoloAudioProcessor()
     addParameter(mDepthLFOParameter = new AudioParameterFloat("DepthLFO", "DepthLFO", 1.f, 20.f, 1.f));
 
     addParameter(mSpeedLFODepthParameter = new AudioParameterFloat("SpeedLFODepth", "SpeedLFODepth", 0.f, 1.f, 0.f));
+    addParameter(mDryWetLFODepthParameter = new AudioParameterFloat("DryWetLFODepth", "DryWetLFODepth", 0.f, 1.f, 0.f));
+    addParameter(mDepthLFODepthParameter = new AudioParameterFloat("DepthLFODepth", "DepthLFODepth", 0.f, 1.f, 0.f));
     
     mPeriod = 0.0;
     mTime = 0.0;
@@ -167,26 +169,26 @@ void TVRATremoloAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, 
     juce::ScopedNoDenormals noDenormals;
     auto totalNumInputChannels  = getTotalNumInputChannels();
     auto totalNumOutputChannels = getTotalNumOutputChannels();
-    
-    
 
     for (auto i = totalNumInputChannels; i < totalNumOutputChannels; ++i)
         buffer.clear (i, 0, buffer.getNumSamples());
 
-
     auto ppqPerSample = GetPPQPerSample();
     double offset = 0.0;
-
 
     for (size_t i = 0; i < buffer.getNumSamples(); i++)
     {
         float BPS = mBPM != 0 && mSyncToggle ? mBPM / 60.0 : 1.f;
 
         mSpeedLFOPeriod += juce::MathConstants<float>::twoPi * *mSpeedLFOParameter / getSampleRate();
-        float mSpeedLFO = sin(mSpeedLFOPeriod);
-        float mSpeedLFOMapped = 1 - *mSpeedLFODepthParameter + *mSpeedLFODepthParameter * jmap(mSpeedLFO, -1.f, 1.f, 0.1f, 1.f);
+        float speedLFO = sin(mSpeedLFOPeriod);
+        float speedLFOMapped = 1 - *mSpeedLFODepthParameter + *mSpeedLFODepthParameter * jmap(speedLFO, -1.f, 1.f, 0.1f, 1.f);
 
-        float speed = mSyncToggle ? BPS / mSyncSpeed : *mSpeedParameter * mSpeedLFOMapped;
+
+        float dryWetLFOMapped = 1 - *mDryWetLFODepthParameter + *mDryWetLFODepthParameter * jmap(speedLFO, -1.f, 1.f, 0.1f, 1.f);
+        float depthLFOMapped = 1 - *mDepthLFODepthParameter + *mDepthLFODepthParameter * jmap(speedLFO, -1.f, 1.f, 0.1f, 1.f);
+
+        float speed = mSyncToggle ? BPS / mSyncSpeed : *mSpeedParameter * speedLFOMapped;
         mSmoothSpeedParam = mSmoothSpeedParam + 0.001 * (speed - mSmoothSpeedParam);
 
         mPeriod += juce::MathConstants<float>::twoPi * mSmoothSpeedParam / getSampleRate();
@@ -216,7 +218,9 @@ void TVRATremoloAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, 
         }
 
         mSmoothLFO = mSmoothLFO + 0.01f * (lfo - mSmoothLFO);
-        float lfoMapped = jmap(mSmoothLFO, -1.f, 1.f, 0.99f - *mDepthParameter, 0.99f);
+
+        float depthAmount = *mDepthParameter * depthLFOMapped;
+        float lfoMapped = jmap(mSmoothLFO, -1.f, 1.f, 0.99f - depthAmount, 0.99f);
 
         updateCurrentTimeInfoFromHost();
 
@@ -228,8 +232,10 @@ void TVRATremoloAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, 
         if (relativePosition <= ppqPerSample && mSyncToggle && mPlayHeadInfo.isPlaying)
             mPhaseOffset = -mPeriod; 
 
-        float leftOut = buffer.getSample(0, (int)i) * (1 - *mDryWetParameter) + (buffer.getSample(0, (int)i) * lfoMapped) * *mDryWetParameter;
-        float rightOut = buffer.getSample(1, (int)i) * (1 - *mDryWetParameter) + (buffer.getSample(1, (int)i) * lfoMapped) * *mDryWetParameter;
+        float DryAmount = *mDryWetParameter * dryWetLFOMapped;
+
+        float leftOut = buffer.getSample(0, (int)i) * (1 - DryAmount) + (buffer.getSample(0, (int)i) * lfoMapped) * DryAmount;
+        float rightOut = buffer.getSample(1, (int)i) * (1 - DryAmount) + (buffer.getSample(1, (int)i) * lfoMapped) * DryAmount;
 
         buffer.setSample(0, (int)i, leftOut);
         buffer.setSample(1, (int)i, rightOut);
@@ -274,6 +280,13 @@ void TVRATremoloAudioProcessor::getStateInformation (juce::MemoryBlock& destData
     xml->setAttribute("Speed", *mSpeedParameter);
     xml->setAttribute("SyncToggle", mSyncToggle);
     xml->setAttribute("Shape", *mShapeParameter);
+    xml->setAttribute("SpeedLFO", *mSpeedLFOParameter);
+    xml->setAttribute("DryWetLFO", *mDryWetLFOParameter);
+    xml->setAttribute("DepthLFO", *mDepthLFOParameter);
+    xml->setAttribute("SpeedDepthLFO", *mSpeedLFODepthParameter);
+    xml->setAttribute("DryWetDepthLFO", *mDryWetLFODepthParameter);
+    xml->setAttribute("DepthDepthLFO", *mDepthLFODepthParameter);
+
     copyXmlToBinary(*xml, destData);
 }
 
@@ -285,6 +298,15 @@ void TVRATremoloAudioProcessor::setStateInformation (const void* data, int sizeI
         *mDryWetParameter = xml->getDoubleAttribute("DryWet");
         *mDepthParameter = xml->getDoubleAttribute("Depth");
         *mSpeedParameter = xml->getDoubleAttribute("Speed");
+
+        *mSpeedLFOParameter = xml->getDoubleAttribute("SpeedLFO");
+        *mDryWetLFOParameter = xml->getDoubleAttribute("DryWetLFO");
+        *mDepthLFOParameter = xml->getDoubleAttribute("DepthLFO");
+
+        *mSpeedLFODepthParameter = xml->getDoubleAttribute("SpeedDepthLFO");
+        *mDryWetLFODepthParameter = xml->getDoubleAttribute("DryWetDepthLFO");
+        *mDepthLFODepthParameter = xml->getDoubleAttribute("DepthDepthLFO");
+
         mSyncToggle = xml->getBoolAttribute("SyncToggle");
         *mShapeParameter = xml->getIntAttribute("Shape");
     }
