@@ -63,28 +63,24 @@ private:
     AudioParameterFloat* mSpeedParameter;
     AudioParameterFloat* mDryWetParameter;
     AudioParameterFloat* mDepthParameter;
-
     AudioParameterInt* mShapeParameter;
-    AudioParameterInt* mSyncParameter;
 
-    float BPM;
-    float syncSpeed;
+    float mBPM;
+    float mSyncSpeed;
     bool mSyncToggle;
-    
-    
-    double period;
-    double time;
-    double smoothSpeedParam;
-    float smoothLFO;
-    double debugNum{ 0.0 };
+      
+    double mPeriod;
+    double mTime;
+    double mSmoothSpeedParam;
+    float mSmoothLFO;
 
-    // Tempo Sync
-    double samplesInMinutes{0};
+    double mSamplesInMinutes{0};
+
     std::vector<double> mPpqPositions;
     juce::AudioPlayHead::CurrentPositionInfo mPlayHeadInfo;
 
     float* mLfoPositions{ nullptr };
-    double phaseOffset{ 0.0 };
+    double mPhaseOffset{ 0.0 };
 
     //==============================================================================
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (TVRATremoloAudioProcessor)
@@ -94,7 +90,7 @@ public:
     void setSync(bool isSynced);
     void setSyncAmount();
 
-    std::atomic<double> currentPlayHeadPosition{ 0 };
-    std::atomic<double> quarterNotePosition{ 0 };
+    std::atomic<double> CurrentPlayHeadPosition{ 0 };
+    std::atomic<double> QuarterNotePosition{ 0 };
 
 };

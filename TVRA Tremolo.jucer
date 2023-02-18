@@ -2,7 +2,8 @@
 
 <JUCERPROJECT id="btr0J6" name="TVRA Tremolo" projectType="audioplug" useAppConfig="0"
               displaySplashScreen="1" jucerFormatVersion="1" companyWebsite="www.thomasvraudio.com"
-              companyEmail="info@thomasvraudio.com" companyName="Thomas VR Audio">
+              companyEmail="info@thomasvraudio.com" companyName="Thomas VR Audio"
+              pluginName="TA Tremolo" pluginDesc="Tremolo" pluginManufacturer="Thomas VR Audio">
   <MAINGROUP id="q0oHs4" name="TVRA Tremolo">
     <GROUP id="{1CCE8C16-D34C-D1AF-4CDC-6FB1FC110DEB}" name="Source">
       <FILE id="edFe0E" name="AtomicLabel.h" compile="0" resource="0" file="Source/AtomicLabel.h"/>

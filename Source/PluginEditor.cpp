@@ -20,26 +20,24 @@ TVRATremoloAudioProcessorEditor::TVRATremoloAudioProcessorEditor (TVRATremoloAud
     // editor's size to whatever you need it to be.
     setSize (400, 300);
 
-
-    //addAndMakeVisible(positionLabel);
-    //positionLabel.setBounds(300,200,100,100);
-    //addAndMakeVisible(quarterNoteLabel);
-    //quarterNoteLabel.setBounds(200, 200, 100, 100);
+    mTitleBox = { 80, 250,300, 50 };
+    mTitleFont.setBold(true);
+    mTitleFont.setHeight(15.0f);
 
 
     auto params = audioProcessor.getParameters();
 
-    xOffset = -20;
-    yOffset = 0;
+    mXOffset = -20;
+    mYOffset = 0;
 
     AudioParameterFloat* speedParameter = (AudioParameterFloat*)params.getUnchecked(0);
     AudioParameterFloat* dryWetParameter = (AudioParameterFloat*)params.getUnchecked(1);
     AudioParameterFloat* depthParameter = (AudioParameterFloat*)params.getUnchecked(2);
     AudioParameterInt* shapeParameter = (AudioParameterInt*)params.getUnchecked(3);
 
-    sliderSetup(mSpeedSlider, speedParameter, speedLabel, xOffset + getLocalBounds().getWidth() / 4, yOffset);
-    sliderSetup(mDryWetSlider, dryWetParameter, dryWetLabel, xOffset + 2 * (getLocalBounds().getWidth() / 4), yOffset);
-    sliderSetup(mDepthSlider, depthParameter, depthLabel, xOffset + 3 * (getLocalBounds().getWidth() / 4), yOffset);
+    sliderSetup(mSpeedSlider, speedParameter, mSpeedLabel, mXOffset + getLocalBounds().getWidth() / 4, mYOffset);
+    sliderSetup(mDryWetSlider, dryWetParameter, mDryWetLabel, mXOffset + 2 * (getLocalBounds().getWidth() / 4), mYOffset);
+    sliderSetup(mDepthSlider, depthParameter, mDepthLabel, mXOffset + 3 * (getLocalBounds().getWidth() / 4), mYOffset);
 
     mShapeType.addItemList(mShapeTypeList,1);
     comboSetup(mShapeType, shapeParameter);
@@ -56,8 +54,8 @@ TVRATremoloAudioProcessorEditor::TVRATremoloAudioProcessorEditor (TVRATremoloAud
         audioProcessor.setSyncAmount();
 
         if (mSyncButton->getToggleState()) {
-            mSpeedSlider.setRange(0, 10, 1.0);
-            mSpeedSlider.setValue((int)mSpeedSlider.getValue());
+            mSpeedSlider.setRange(0.0f, 9.0f, 1.0f);
+            mSpeedSlider.setValue(mSpeedSlider.getValue());
         }
         else {
             mSpeedSlider.setRange(speedParameter->range.start, speedParameter->range.end);
@@ -114,7 +112,7 @@ void TVRATremoloAudioProcessorEditor::sliderSetup(SliderWithMenu& slider, AudioP
 
 void TVRATremoloAudioProcessorEditor::comboSetup(ComboBox& box, AudioParameterInt* param) {
     
-    box.setBounds(xOffset + getLocalBounds().getWidth() / 4, 200, 100, 20);
+    box.setBounds(mXOffset + getLocalBounds().getWidth() / 4, 200, 100, 20);
     box.setSelectedItemIndex(0);
     addAndMakeVisible(box);
 
@@ -138,8 +136,13 @@ void TVRATremoloAudioProcessorEditor::paint (juce::Graphics& g)
     // (Our component is opaque, so we must completely fill the background with a solid colour)
     //g.fillAll (getLookAndFeel().findColour (juce::ResizableWindow::backgroundColourId));
     g.setColour (juce::Colour(242, 243, 241));
-    g.setFont (25.0f);
-    //g.drawFittedText ("TVRA Tremolo", getLocalBounds(), juce::Justification::centred, 1);
+    g.setGradientFill(juce::ColourGradient(juce::Colour(30, 108, 142), 0.f, 0.f,
+        juce::Colours::beige,
+        (float)mTitleBox.getWidth(),
+        (float)mTitleBox.getHeight(),
+        false));
+    g.setFont (mTitleFont);
+    g.drawFittedText ("Thomas VR Audio :: Tremolo", mTitleBox, juce::Justification::right, 1);
 }
 
 void TVRATremoloAudioProcessorEditor::resized()

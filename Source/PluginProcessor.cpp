@@ -26,15 +26,14 @@ TVRATremoloAudioProcessor::TVRATremoloAudioProcessor()
     addParameter(mSpeedParameter = new AudioParameterFloat("Speed", "Speed", 0.01f, 20.f, 10.f));
     addParameter(mDryWetParameter = new AudioParameterFloat("DryWet", "DryWet", 0.0f, 1.0f, 0.5f));
     addParameter(mDepthParameter = new AudioParameterFloat("Depth", "Depth", 0.0f, 1.0f, 0.5f));
-    addParameter(mShapeParameter = new AudioParameterInt("Shape", "Shape", 0, 2, 0));
-    addParameter(mSyncParameter = new AudioParameterInt("Sync", "Sync", 0, 10, 0));
+    addParameter(mShapeParameter = new AudioParameterInt("Shape", "Shape", 0, 3, 0));
     
-    period = 0.0;
-    time = 0.0;
-    smoothSpeedParam = mSpeedParameter->get();
-    smoothLFO = 0.0;
-    BPM = 0.0f;
-    syncSpeed = 0.0f;
+    mPeriod = 0.0;
+    mTime = 0.0;
+    mSmoothSpeedParam = mSpeedParameter->get();
+    mSmoothLFO = 0.0;
+    mBPM = 0.0f;
+    mSyncSpeed = 0.0f;
 
     mSyncToggle = false;
 }
@@ -109,10 +108,10 @@ void TVRATremoloAudioProcessor::changeProgramName (int index, const juce::String
 //==============================================================================
 void TVRATremoloAudioProcessor::prepareToPlay (double sampleRate, int samplesPerBlock)
 {
-    period = 0.0;
-    smoothLFO = 0.0;
+    mPeriod = 0.0;
+    mSmoothLFO = 0.0;
 
-    samplesInMinutes = sampleRate * 60;
+    mSamplesInMinutes = sampleRate * 60;
     mPpqPositions.resize(samplesPerBlock); //block of 480
     
     if (mLfoPositions == nullptr) {
@@ -175,15 +174,15 @@ void TVRATremoloAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, 
         if (mSyncToggle)
             setSyncAmount();
 
-        float speed = mSyncToggle ? syncSpeed : *mSpeedParameter;
-        smoothSpeedParam = smoothSpeedParam + 0.001 * (speed - smoothSpeedParam);
+        float speed = mSyncToggle ? mSyncSpeed : *mSpeedParameter;
+        mSmoothSpeedParam = mSmoothSpeedParam + 0.001 * (speed - mSmoothSpeedParam);
 
-        period += juce::MathConstants<float>::twoPi * smoothSpeedParam / getSampleRate();
+        mPeriod += juce::MathConstants<float>::twoPi * mSmoothSpeedParam / getSampleRate();
 
         float lfo;
-        float sine = sin(period + phaseOffset); 
+        float sine = sin(mPeriod + mPhaseOffset); 
 
-        time += smoothSpeedParam / getSampleRate();
+        mTime += mSmoothSpeedParam / getSampleRate();
 
         switch (*mShapeParameter) {
         case 0:
@@ -193,15 +192,18 @@ void TVRATremoloAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, 
             lfo = sine > 0 ? 1.f: -1.f;
             break;
         case 2:
-            lfo = 4.f * abs(time - floor(time + 1.f / 2.f)) -1.f;
+            lfo = sine > 0.5f ? 1.f : -1.f;
+            break;
+        case 3:
+            lfo = 4.f * abs(mTime - floor(mTime + 1.f / 2.f)) -1.f;
             break;
         default:
             jassertfalse;
             break;
         }
 
-        smoothLFO = smoothLFO + 0.01f * (lfo - smoothLFO);
-        float lfoMapped = jmap(smoothLFO, -1.f, 1.f, 0.99f - *mDepthParameter, 0.99f);
+        mSmoothLFO = mSmoothLFO + 0.01f * (lfo - mSmoothLFO);
+        float lfoMapped = jmap(mSmoothLFO, -1.f, 1.f, 0.99f - *mDepthParameter, 0.99f);
 
 
         updateCurrentTimeInfoFromHost();
@@ -211,8 +213,8 @@ void TVRATremoloAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, 
 
         auto relativePosition = fmod(mPpqPositions[(int)i], 1.0); 
 
-        if (relativePosition <= ppqPerSample) { 
-            phaseOffset = -period; 
+        if (relativePosition <= ppqPerSample && mSyncToggle && mPlayHeadInfo.isPlaying) { 
+            mPhaseOffset = -mPeriod; 
         }
 
         float leftOut = buffer.getSample(0, (int)i) * (1 - *mDryWetParameter) + (buffer.getSample(0, (int)i) * lfoMapped) * *mDryWetParameter;
@@ -228,15 +230,15 @@ void TVRATremoloAudioProcessor::updateCurrentTimeInfoFromHost()
     if (AudioPlayHead* ph = getPlayHead()) {
 
         if (ph->getCurrentPosition(mPlayHeadInfo)) {
-            BPM = mPlayHeadInfo.bpm;
-            currentPlayHeadPosition.store(mPlayHeadInfo.ppqPosition);
+            mBPM = mPlayHeadInfo.bpm;
+            CurrentPlayHeadPosition.store(mPlayHeadInfo.ppqPosition);
         }
     }
 }
 
 double TVRATremoloAudioProcessor::GetPPQPerSample() const {
 
-    auto samplesPerBeat = samplesInMinutes / mPlayHeadInfo.bpm;
+    auto samplesPerBeat = mSamplesInMinutes / mPlayHeadInfo.bpm;
     return 1.0 / samplesPerBeat; // calculate musical timing in 1 sample
 
 }
@@ -259,6 +261,8 @@ void TVRATremoloAudioProcessor::getStateInformation (juce::MemoryBlock& destData
     xml->setAttribute("DryWet", *mDryWetParameter);
     xml->setAttribute("Depth", *mDepthParameter);
     xml->setAttribute("Speed", *mSpeedParameter);
+    xml->setAttribute("SyncToggle", mSyncToggle);
+    xml->setAttribute("Shape", *mShapeParameter);
     copyXmlToBinary(*xml, destData);
 }
 
@@ -270,6 +274,8 @@ void TVRATremoloAudioProcessor::setStateInformation (const void* data, int sizeI
         *mDryWetParameter = xml->getDoubleAttribute("DryWet");
         *mDepthParameter = xml->getDoubleAttribute("Depth");
         *mSpeedParameter = xml->getDoubleAttribute("Speed");
+        mSyncToggle = xml->getBoolAttribute("SyncToggle");
+        *mShapeParameter = xml->getIntAttribute("Shape");
     }
 }
 
@@ -291,45 +297,43 @@ void TVRATremoloAudioProcessor::setSync(bool isSynced) {
 void TVRATremoloAudioProcessor::setSyncAmount()
 {
 
-    if (BPM != 0 && mSyncToggle) {
-        float BPS = BPM / 60;
-        switch ((int)*mSpeedParameter)
+    if (mBPM != 0 && mSyncToggle) {
+        float BPS = mBPM / 60.0f;
+
+        switch ((int)round(*mSpeedParameter))
         {
-        case 0: // 16/1
-            syncSpeed = BPS / 64;
+        case 0: 
+            mSyncSpeed = BPS;
             break;
-        case 1: // 8/1
-            syncSpeed = BPS / 32;
-            break;
-        case 2: // 4/1
-            syncSpeed = BPS / 16;
+        case 1: 
+            mSyncSpeed = BPS / 0.5f;
             break; 
-        case 3: // 2/1
-            syncSpeed = BPS / 8;
+        case 2:
+            mSyncSpeed = (BPS / 0.5f) * 1.5f;
             break; 
-        case 4: // 1/1
-            syncSpeed = BPS / 4;
+        case 3: 
+            mSyncSpeed = BPS / 0.25f;
             break; 
-        case 5: // 1/2
-            syncSpeed = BPS / 2;
+        case 4: 
+            mSyncSpeed = (BPS / 0.25f) * 1.5f;
             break; 
-        case 6: // 1/4
-            syncSpeed = BPS;
+        case 5: 
+            mSyncSpeed = BPS / 0.125f;
             break;
-        case 7: // 1/8
-            syncSpeed = BPS / 0.5f;
+        case 6: 
+            mSyncSpeed = (BPS / 0.125f) * 1.5f;
             break;
-        case 8: // 1/16
-            syncSpeed = BPS / 0.25f;
+        case 7: 
+            mSyncSpeed = BPS / 0.0625f;
             break;
-        case 9: // 1/32
-            syncSpeed = BPS / 0.125f;
+        case 8: 
+            mSyncSpeed = (BPS / 0.0625f) * 1.5f; 
             break;
-        case 10: // 1/64
-            syncSpeed = BPS / 0.0625f;
+        case 9: 
+            mSyncSpeed = BPS / 0.03125f;
             break;
         default:
-            jassertfalse;
+            mSyncSpeed = BPS;
             break;
         }
     }

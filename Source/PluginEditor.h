@@ -37,24 +37,23 @@ private:
     SliderWithMenu mDepthSlider;
 
     std::unique_ptr<ToggleButton> mSyncButton;
-    Label speedLabel;
-    Label dryWetLabel;
-    Label depthLabel;
-    Label syncLabel;
+    Label mSpeedLabel;
+    Label mDryWetLabel;
+    Label mDepthLabel;
 
-    int xOffset;
-    int yOffset;
+    int mXOffset;
+    int mYOffset;
+    juce::Rectangle<int> mTitleBox;
+    juce::Font mTitleFont;
 
     ComboBox mShapeType;
 
     StringArray mShapeTypeList = {
         "Sine",
         "Square",
+        "Pulse",
         "Triangle"
     };
-
-    //AtomicLabel positionLabel;
-    //AtomicLabel quarterNoteLabel;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (TVRATremoloAudioProcessorEditor)
 };
