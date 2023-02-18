@@ -65,6 +65,12 @@ private:
     AudioParameterFloat* mDepthParameter;
     AudioParameterInt* mShapeParameter;
 
+    AudioParameterFloat* mSpeedLFOParameter;
+    AudioParameterFloat* mDryWetLFOParameter;
+    AudioParameterFloat* mDepthLFOParameter;
+
+    AudioParameterFloat* mSpeedLFODepthParameter;
+
     float mBPM;
     float mSyncSpeed;
     bool mSyncToggle;
@@ -73,6 +79,8 @@ private:
     double mTime;
     double mSmoothSpeedParam;
     float mSmoothLFO;
+
+    double mSpeedLFOPeriod{ 0.0 };
 
     double mSamplesInMinutes{0};
 

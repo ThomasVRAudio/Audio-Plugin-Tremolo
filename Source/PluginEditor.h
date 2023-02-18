@@ -28,21 +28,35 @@ public:
 
 private:
     TVRATremoloAudioProcessor& audioProcessor;
-    void sliderSetup(SliderWithMenu& slider, AudioParameterFloat* param, Label& label, int x = 0, int y = 0, int width = 20, int height = 100);
-    void sliderSetup(SliderWithMenu& slider, AudioParameterInt* param, Label& label, int x = 0, int y = 0, int width = 100, int height = 100);
+    void sliderSetup(SliderWithMenu& slider, AudioParameterFloat* param, 
+                                                                  int x = 0, 
+                                                                  int y = 0, 
+                                                                  int width = 20, 
+                                                                  int height = 100, 
+                                                                  Slider::SliderStyle style = Slider::SliderStyle::LinearVertical);
+    void sliderSetup(SliderWithMenu& slider, AudioParameterInt* param, int x = 0, int y = 0, int width = 100, int height = 100);
     void comboSetup(ComboBox& box, AudioParameterInt* param);
+    void labelSetup(SliderWithMenu& slider, RangedAudioParameter* param, Label& label);
 
     SliderWithMenu mSpeedSlider;
     SliderWithMenu mDryWetSlider;
     SliderWithMenu mDepthSlider;
 
+    SliderWithMenu mSpeedLFOKnob;
+    SliderWithMenu mDryWetLFOKnob;
+    SliderWithMenu mDepthLFOKnob;
+
+    SliderWithMenu mSpeedLFODepthKnob;
+
     std::unique_ptr<ToggleButton> mSyncButton;
     Label mSpeedLabel;
     Label mDryWetLabel;
     Label mDepthLabel;
+    Label mEmptyLabel;
 
     int mXOffset;
     int mYOffset;
+    int mKnobOffset;
     juce::Rectangle<int> mTitleBox;
     juce::Font mTitleFont;
 
