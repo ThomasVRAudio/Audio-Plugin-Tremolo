@@ -60,12 +60,12 @@ private:
     void updateCurrentTimeInfoFromHost();
     double GetPPQPerSample() const;
 
-    std::unique_ptr<AudioParameterFloat> mSpeedParameter;
-    std::unique_ptr<AudioParameterFloat> mDryWetParameter;
-    std::unique_ptr<AudioParameterFloat> mDepthParameter;
+    AudioParameterFloat* mSpeedParameter;
+    AudioParameterFloat* mDryWetParameter;
+    AudioParameterFloat* mDepthParameter;
 
-    std::unique_ptr<AudioParameterInt> mShapeParameter;
-    std::unique_ptr<AudioParameterInt> mSyncParameter;
+    AudioParameterInt* mShapeParameter;
+    AudioParameterInt* mSyncParameter;
 
     float BPM;
     float syncSpeed;
@@ -75,7 +75,7 @@ private:
     double period;
     double time;
     double smoothSpeedParam;
-    double smoothLFO;
+    float smoothLFO;
     double debugNum{ 0.0 };
 
     // Tempo Sync

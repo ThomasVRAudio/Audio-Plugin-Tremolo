@@ -22,20 +22,12 @@ TVRATremoloAudioProcessor::TVRATremoloAudioProcessor()
                        )
 #endif
 {
-    mSpeedParameter = std::make_unique<AudioParameterFloat>("Speed", "Speed", 0.01f, 20.f, 10.f);
-    addParameter(mSpeedParameter.get());
 
-    mDryWetParameter = std::make_unique<AudioParameterFloat>("DryWet", "DryWet", 0.0f, 1.0f, 0.5f);
-    addParameter(mDryWetParameter.get());
-
-    mDepthParameter = std::make_unique<AudioParameterFloat>("Depth", "Depth", 0.0f, 1.0f, 0.5f);
-    addParameter(mDepthParameter.get());
-
-    mShapeParameter = std::make_unique<AudioParameterInt>("Shape", "Shape", 0, 2, 0);
-    addParameter(mShapeParameter.get());
-
-    mSyncParameter = std::make_unique<AudioParameterInt>("Sync", "Sync", 0, 10, 0);
-    addParameter(mSyncParameter.get());
+    addParameter(mSpeedParameter = new AudioParameterFloat("Speed", "Speed", 0.01f, 20.f, 10.f));
+    addParameter(mDryWetParameter = new AudioParameterFloat("DryWet", "DryWet", 0.0f, 1.0f, 0.5f));
+    addParameter(mDepthParameter = new AudioParameterFloat("Depth", "Depth", 0.0f, 1.0f, 0.5f));
+    addParameter(mShapeParameter = new AudioParameterInt("Shape", "Shape", 0, 2, 0));
+    addParameter(mSyncParameter = new AudioParameterInt("Sync", "Sync", 0, 10, 0));
     
     period = 0.0;
     time = 0.0;
@@ -190,7 +182,6 @@ void TVRATremoloAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, 
 
         float lfo;
         float sine = sin(period + phaseOffset); 
-        float square = sine > 0 ? 1 : -1;
 
         time += smoothSpeedParam / getSampleRate();
 
@@ -199,36 +190,36 @@ void TVRATremoloAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, 
             lfo = sine;
             break;
         case 1:
-            lfo = sine > 0 ? 1: -1;
+            lfo = sine > 0 ? 1.f: -1.f;
             break;
         case 2:
-            lfo = 4 * abs(time - floor(time + 1 / 2)) -1;
+            lfo = 4.f * abs(time - floor(time + 1.f / 2.f)) -1.f;
             break;
         default:
             jassertfalse;
             break;
         }
 
-        smoothLFO = smoothLFO + 0.01 * (lfo - smoothLFO);
-        float lfoMapped = jmap((float)smoothLFO, -1.f, 1.f, 0.99f - (float)*mDepthParameter, 0.99f);
+        smoothLFO = smoothLFO + 0.01f * (lfo - smoothLFO);
+        float lfoMapped = jmap(smoothLFO, -1.f, 1.f, 0.99f - *mDepthParameter, 0.99f);
 
 
         updateCurrentTimeInfoFromHost();
 
         offset += ppqPerSample;
-        mPpqPositions[i] = mPlayHeadInfo.ppqPosition + offset;
+        mPpqPositions[(int)i] = mPlayHeadInfo.ppqPosition + offset;
 
-        auto relativePosition = fmod(mPpqPositions[i], 1.0); 
+        auto relativePosition = fmod(mPpqPositions[(int)i], 1.0); 
 
         if (relativePosition <= ppqPerSample) { 
             phaseOffset = -period; 
         }
 
-        float leftOut = buffer.getSample(0, i) * (1 - *mDryWetParameter) + (buffer.getSample(0, i) * lfoMapped) * *mDryWetParameter;
-        float rightOut = buffer.getSample(1, i) * (1 - *mDryWetParameter) + (buffer.getSample(1, i) * lfoMapped) * *mDryWetParameter;
+        float leftOut = buffer.getSample(0, (int)i) * (1 - *mDryWetParameter) + (buffer.getSample(0, (int)i) * lfoMapped) * *mDryWetParameter;
+        float rightOut = buffer.getSample(1, (int)i) * (1 - *mDryWetParameter) + (buffer.getSample(1, (int)i) * lfoMapped) * *mDryWetParameter;
 
-        buffer.setSample(0, i, leftOut);
-        buffer.setSample(1, i, rightOut);
+        buffer.setSample(0, (int)i, leftOut);
+        buffer.setSample(1, (int)i, rightOut);
     }
 }
 

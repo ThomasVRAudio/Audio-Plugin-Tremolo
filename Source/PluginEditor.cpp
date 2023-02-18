@@ -36,14 +36,13 @@ TVRATremoloAudioProcessorEditor::TVRATremoloAudioProcessorEditor (TVRATremoloAud
     AudioParameterFloat* dryWetParameter = (AudioParameterFloat*)params.getUnchecked(1);
     AudioParameterFloat* depthParameter = (AudioParameterFloat*)params.getUnchecked(2);
     AudioParameterInt* shapeParameter = (AudioParameterInt*)params.getUnchecked(3);
-    AudioParameterInt* syncParameter = (AudioParameterInt*)params.getUnchecked(4);
 
     sliderSetup(mSpeedSlider, speedParameter, speedLabel, xOffset + getLocalBounds().getWidth() / 4, yOffset);
-    sliderSetup(mDryWetSlider, dryWetParameter, dryWetLabel, xOffset + 2.f * (getLocalBounds().getWidth() / 4), yOffset);
-    sliderSetup(mDepthSlider, depthParameter, depthLabel, xOffset + 3.f * (getLocalBounds().getWidth() / 4), yOffset);
+    sliderSetup(mDryWetSlider, dryWetParameter, dryWetLabel, xOffset + 2 * (getLocalBounds().getWidth() / 4), yOffset);
+    sliderSetup(mDepthSlider, depthParameter, depthLabel, xOffset + 3 * (getLocalBounds().getWidth() / 4), yOffset);
 
     mShapeType.addItemList(mShapeTypeList,1);
-    comboSetup(mShapeType, shapeParameter, xOffset + getLocalBounds().getWidth() / 4, 200, 100, 20);
+    comboSetup(mShapeType, shapeParameter);
 
     mSyncButton = std::make_unique <ToggleButton>("Sync");
     mSyncButton->setBounds(100, 100, 50, 50);
@@ -65,14 +64,14 @@ TVRATremoloAudioProcessorEditor::TVRATremoloAudioProcessorEditor (TVRATremoloAud
         }
 
     mSpeedSlider.onValueChange = [this, speedParameter] {
-        *speedParameter = mSpeedSlider.getValue();
+        *speedParameter = (float)mSpeedSlider.getValue();
         audioProcessor.setSyncAmount();
         };
 
     };
 }
 
-void TVRATremoloAudioProcessorEditor::sliderSetup(SliderWithMenu& slider, AudioParameterFloat* param, Label &label, float x, float y, float width, float height) {
+void TVRATremoloAudioProcessorEditor::sliderSetup(SliderWithMenu& slider, AudioParameterFloat* param, Label &label, int x, int y, int width, int height) {
     slider.setBounds(x, y, width, height);
     slider.setRange(param->range.start, param->range.end);
     slider.setValue(param->get());
@@ -80,7 +79,7 @@ void TVRATremoloAudioProcessorEditor::sliderSetup(SliderWithMenu& slider, AudioP
     slider.setSliderStyle(Slider::SliderStyle::LinearVertical);
     addAndMakeVisible(slider);
 
-    slider.onValueChange = [&slider, param] { *param = slider.getValue(); };
+    slider.onValueChange = [&slider, param] { *param = (float)slider.getValue(); };
     slider.onDragStart = [&slider, param] { param->beginChangeGesture(); };
     slider.onDragEnd = [&slider, param] { param->endChangeGesture(); };
 
@@ -92,7 +91,7 @@ void TVRATremoloAudioProcessorEditor::sliderSetup(SliderWithMenu& slider, AudioP
     slider.setupMouseEvent(*this, audioProcessor, param->getParameterIndex());
 }
 
-void TVRATremoloAudioProcessorEditor::sliderSetup(SliderWithMenu& slider, AudioParameterInt* param, Label& label, float x, float y, float width, float height) {
+void TVRATremoloAudioProcessorEditor::sliderSetup(SliderWithMenu& slider, AudioParameterInt* param, Label& label, int x, int y, int width, int height) {
     slider.setBounds(x, y, width, height);
     slider.setRange(param->getRange().getStart(), param->getRange().getEnd(), 1);
     slider.setValue(param->get());
@@ -100,7 +99,7 @@ void TVRATremoloAudioProcessorEditor::sliderSetup(SliderWithMenu& slider, AudioP
     slider.setSliderStyle(Slider::SliderStyle::RotaryVerticalDrag);
     addAndMakeVisible(slider);
 
-    slider.onValueChange = [&slider, param] { *param = slider.getValue(); };
+    slider.onValueChange = [&slider, param] { *param = (int)slider.getValue(); };
     slider.onDragStart = [&slider, param] { param->beginChangeGesture(); };
     slider.onDragEnd = [&slider, param] { param->endChangeGesture(); };
 
@@ -113,7 +112,7 @@ void TVRATremoloAudioProcessorEditor::sliderSetup(SliderWithMenu& slider, AudioP
     slider.setupMouseEvent(*this, audioProcessor, param->getParameterIndex());
 }
 
-void TVRATremoloAudioProcessorEditor::comboSetup(ComboBox& box, AudioParameterInt* param, float x, float y, float width, float height) {
+void TVRATremoloAudioProcessorEditor::comboSetup(ComboBox& box, AudioParameterInt* param) {
     
     box.setBounds(xOffset + getLocalBounds().getWidth() / 4, 200, 100, 20);
     box.setSelectedItemIndex(0);

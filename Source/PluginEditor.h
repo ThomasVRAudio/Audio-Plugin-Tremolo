@@ -28,9 +28,9 @@ public:
 
 private:
     TVRATremoloAudioProcessor& audioProcessor;
-    void sliderSetup(SliderWithMenu& slider, AudioParameterFloat* param, Label& label, float x = 0.f, float y = 0.f, float width = 20.f, float height = 100.f);
-    void sliderSetup(SliderWithMenu& slider, AudioParameterInt* param, Label& label, float x = 0.f, float y = 0.f, float width = 100.f, float height = 100.f);
-    void comboSetup(ComboBox& box, AudioParameterInt* param, float x = 0.f, float y = 0.f, float widht = 20.f, float height = 100.f);
+    void sliderSetup(SliderWithMenu& slider, AudioParameterFloat* param, Label& label, int x = 0, int y = 0, int width = 20, int height = 100);
+    void sliderSetup(SliderWithMenu& slider, AudioParameterInt* param, Label& label, int x = 0, int y = 0, int width = 100, int height = 100);
+    void comboSetup(ComboBox& box, AudioParameterInt* param);
 
     SliderWithMenu mSpeedSlider;
     SliderWithMenu mDryWetSlider;
