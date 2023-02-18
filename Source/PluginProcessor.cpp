@@ -33,7 +33,7 @@ TVRATremoloAudioProcessor::TVRATremoloAudioProcessor()
     mSmoothSpeedParam = mSpeedParameter->get();
     mSmoothLFO = 0.0;
     mBPM = 0.0f;
-    mSyncSpeed = 0.0f;
+    mSyncSpeed = 1.0f;
 
     mSyncToggle = false;
 }
@@ -118,6 +118,9 @@ void TVRATremoloAudioProcessor::prepareToPlay (double sampleRate, int samplesPer
         mLfoPositions = new float[samplesPerBlock];
         zeromem(mLfoPositions, samplesPerBlock);
     }
+
+    if (mSyncToggle)
+        setSyncAmount();
  
 }
 
@@ -171,12 +174,9 @@ void TVRATremoloAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, 
 
     for (size_t i = 0; i < buffer.getNumSamples(); i++)
     {
-        if (mSyncToggle)
-            setSyncAmount();
-
-        float speed = mSyncToggle ? mSyncSpeed : *mSpeedParameter;
+        float BPS = mBPM != 0 && mSyncToggle ? mBPM / 60.0 : 1.f;
+        float speed = mSyncToggle ? BPS / mSyncSpeed : *mSpeedParameter;
         mSmoothSpeedParam = mSmoothSpeedParam + 0.001 * (speed - mSmoothSpeedParam);
-
         mPeriod += juce::MathConstants<float>::twoPi * mSmoothSpeedParam / getSampleRate();
 
         float lfo;
@@ -298,42 +298,42 @@ void TVRATremoloAudioProcessor::setSyncAmount()
 {
 
     if (mBPM != 0 && mSyncToggle) {
-        float BPS = mBPM / 60.0f;
+       // float BPS = mBPM / 60.0f;
 
         switch ((int)round(*mSpeedParameter))
         {
         case 0: 
-            mSyncSpeed = BPS;
+            mSyncSpeed = 1;
             break;
         case 1: 
-            mSyncSpeed = BPS / 0.5f;
+            mSyncSpeed = 0.5f;
             break; 
         case 2:
-            mSyncSpeed = (BPS / 0.5f) * 1.5f;
+            mSyncSpeed = 0.5f / 1.5f;
             break; 
         case 3: 
-            mSyncSpeed = BPS / 0.25f;
+            mSyncSpeed = 0.25f;
             break; 
         case 4: 
-            mSyncSpeed = (BPS / 0.25f) * 1.5f;
+            mSyncSpeed = 0.25f / 1.5f;
             break; 
         case 5: 
-            mSyncSpeed = BPS / 0.125f;
+            mSyncSpeed = 0.125f;
             break;
         case 6: 
-            mSyncSpeed = (BPS / 0.125f) * 1.5f;
+            mSyncSpeed = 0.125f / 1.5f;
             break;
         case 7: 
-            mSyncSpeed = BPS / 0.0625f;
+            mSyncSpeed = 0.0625f;
             break;
         case 8: 
-            mSyncSpeed = (BPS / 0.0625f) * 1.5f; 
+            mSyncSpeed = 0.0625f / 1.5f; 
             break;
         case 9: 
-            mSyncSpeed = BPS / 0.03125f;
+            mSyncSpeed = 0.03125f;
             break;
         default:
-            mSyncSpeed = BPS;
+            mSyncSpeed = 1;
             break;
         }
     }

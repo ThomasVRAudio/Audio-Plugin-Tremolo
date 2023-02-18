@@ -45,8 +45,9 @@ TVRATremoloAudioProcessorEditor::TVRATremoloAudioProcessorEditor (TVRATremoloAud
     mSyncButton = std::make_unique <ToggleButton>("Sync");
     mSyncButton->setBounds(100, 100, 50, 50);
     mSyncButton->setToggleable(true);
-    mSyncButton->setToggleState(false, dontSendNotification);
+    mSyncButton->setToggleState(audioProcessor.getSync(), dontSendNotification);
     addAndMakeVisible(*mSyncButton);
+    audioProcessor.setSyncAmount();
 
     mSyncButton->onStateChange = [this, speedParameter] {
         
@@ -55,7 +56,6 @@ TVRATremoloAudioProcessorEditor::TVRATremoloAudioProcessorEditor (TVRATremoloAud
 
         if (mSyncButton->getToggleState()) {
             mSpeedSlider.setRange(0.0f, 9.0f, 1.0f);
-            mSpeedSlider.setValue(mSpeedSlider.getValue());
         }
         else {
             mSpeedSlider.setRange(speedParameter->range.start, speedParameter->range.end);
@@ -113,7 +113,7 @@ void TVRATremoloAudioProcessorEditor::sliderSetup(SliderWithMenu& slider, AudioP
 void TVRATremoloAudioProcessorEditor::comboSetup(ComboBox& box, AudioParameterInt* param) {
     
     box.setBounds(mXOffset + getLocalBounds().getWidth() / 4, 200, 100, 20);
-    box.setSelectedItemIndex(0);
+    box.setSelectedItemIndex(param->get());
     addAndMakeVisible(box);
 
     box.onChange = [&box, param] { *param = box.getSelectedItemIndex(); };
