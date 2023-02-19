@@ -12,6 +12,7 @@
 #include "PluginProcessor.h"
 #include "SliderWithMenu.h"
 #include "AtomicLabel.h"
+#include "CustomLookAndFeel.h"
 
 //==============================================================================
 /**
@@ -49,6 +50,8 @@ private:
     SliderWithMenu mSpeedLFODepthKnob;
     SliderWithMenu mDryWetLFODepthKnob;
     SliderWithMenu mDepthLFODepthKnob;
+
+    CustomLookAndFeel mLookAndFeel;
 
     std::unique_ptr<ToggleButton> mSyncButton;
     Label mSpeedLabel;

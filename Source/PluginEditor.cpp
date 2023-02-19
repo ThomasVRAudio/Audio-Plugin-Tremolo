@@ -20,6 +20,8 @@ TVRATremoloAudioProcessorEditor::TVRATremoloAudioProcessorEditor (TVRATremoloAud
     // editor's size to whatever you need it to be.
     setSize (400, 300);
 
+    juce::LookAndFeel::setDefaultLookAndFeel(&mLookAndFeel);
+
     mTitleBox = { 80, 250,300, 50 };
     mTitleFont.setBold(true);
     mTitleFont.setHeight(15.0f);
@@ -97,11 +99,9 @@ void TVRATremoloAudioProcessorEditor::sliderSetup(SliderWithMenu& slider, AudioP
     slider.setTextBoxStyle(Slider::NoTextBox, false, 0, 0);
     slider.setSliderStyle(style);
     addAndMakeVisible(slider);
-
     slider.onValueChange = [&slider, param] { *param = (float)slider.getValue(); };
     slider.onDragStart = [&slider, param] { param->beginChangeGesture(); };
     slider.onDragEnd = [&slider, param] { param->endChangeGesture(); };
-
     slider.setupMouseEvent(*this, audioProcessor, param->getParameterIndex());
 }
 
@@ -150,6 +150,7 @@ void TVRATremoloAudioProcessorEditor::paint (juce::Graphics& g)
                                            (float)getLocalBounds().getHeight(), 
                                            false));
     g.fillAll();
+    
     // (Our component is opaque, so we must completely fill the background with a solid colour)
     //g.fillAll (getLookAndFeel().findColour (juce::ResizableWindow::backgroundColourId));
     g.setColour (juce::Colour(242, 243, 241));

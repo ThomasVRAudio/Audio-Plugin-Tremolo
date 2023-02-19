@@ -139,6 +139,7 @@
     </Bscmake>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\Source\CustomLookAndFeel.cpp"/>
     <ClCompile Include="..\..\Source\SliderWithMenu.cpp"/>
     <ClCompile Include="..\..\Source\PluginProcessor.cpp"/>
     <ClCompile Include="..\..\Source\PluginEditor.cpp"/>
@@ -2293,6 +2294,7 @@
     <ClCompile Include="..\..\..\JUCE\modules\juce_gui_extra\juce_gui_extra.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="..\..\JuceLibraryCode\BinaryData.cpp"/>
     <ClCompile Include="..\..\JuceLibraryCode\include_juce_audio_basics.cpp"/>
     <ClCompile Include="..\..\JuceLibraryCode\include_juce_audio_devices.cpp"/>
     <ClCompile Include="..\..\JuceLibraryCode\include_juce_audio_formats.cpp"/>
@@ -2314,6 +2316,7 @@
     <ClCompile Include="..\..\JuceLibraryCode\include_juce_gui_extra.cpp"/>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\Source\CustomLookAndFeel.h"/>
     <ClInclude Include="..\..\Source\AtomicLabel.h"/>
     <ClInclude Include="..\..\Source\SliderWithMenu.h"/>
     <ClInclude Include="..\..\Source\PluginProcessor.h"/>
@@ -3215,10 +3218,14 @@
     <ClInclude Include="..\..\..\JUCE\modules\juce_gui_extra\misc\juce_WebBrowserComponent.h"/>
     <ClInclude Include="..\..\..\JUCE\modules\juce_gui_extra\native\juce_mac_NSViewFrameWatcher.h"/>
     <ClInclude Include="..\..\..\JUCE\modules\juce_gui_extra\juce_gui_extra.h"/>
+    <ClInclude Include="..\..\JuceLibraryCode\BinaryData.h"/>
     <ClInclude Include="..\..\JuceLibraryCode\JuceHeader.h"/>
     <ClInclude Include="..\..\JuceLibraryCode\JucePluginDefines.h"/>
   </ItemGroup>
   <ItemGroup>
+    <None Include="..\..\..\..\..\InkScape\box.png"/>
+    <None Include="..\..\..\..\..\InkScape\RotaryKnob.png"/>
+    <None Include="..\..\..\..\..\InkScape\RotaryKnob.svg"/>
     <None Include="..\..\..\JUCE\modules\juce_audio_devices\native\oboe\CMakeLists.txt"/>
     <None Include="..\..\..\JUCE\modules\juce_audio_devices\native\oboe\README.md"/>
     <None Include="..\..\..\JUCE\modules\juce_audio_formats\codecs\flac\Flac Licence.txt"/>
