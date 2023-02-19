@@ -17,11 +17,23 @@ public:
     void drawRotarySlider(Graphics&, int x, int y, int width, int height,
         float sliderPosProportional, float rotaryStartAngle,
         float rotaryEndAngle, Slider&) override;
+    void drawToggleButton(Graphics&, ToggleButton&,
+        bool shouldDrawButtonAsHighlighted, bool shouldDrawButtonAsDown) override;
+
+
 private:
-    Path path;
-    Path knobPath;
-    Path knobBackground;
-    Path knobRect;
+    void setupRotaryKnobPaths();
+    void setupSyncButtonPaths();
+
+    Path rotaryKnobPath;
+    Path rotaryKnobBackground;
+    Path rotaryKnobRect;
+
+public:
+    Path syncKnobPath;
+    Path sPath;
+private:
     float knobOffset;
+
 
 };

@@ -66,7 +66,7 @@ TVRATremoloAudioProcessorEditor::TVRATremoloAudioProcessorEditor (TVRATremoloAud
     comboSetup(mShapeType, shapeParameter);
 
     mSyncButton = std::make_unique <ToggleButton>("Sync");
-    mSyncButton->setBounds(100, 100, 50, 50);
+    mSyncButton->setBounds(70, 210, 70, 70);
     mSyncButton->setToggleable(true);
     mSyncButton->setToggleState(audioProcessor.getSync(), dontSendNotification);
     addAndMakeVisible(*mSyncButton);
@@ -129,7 +129,7 @@ void TVRATremoloAudioProcessorEditor::labelSetup(SliderWithMenu& slider, RangedA
 
 void TVRATremoloAudioProcessorEditor::comboSetup(ComboBox& box, AudioParameterInt* param) {
     
-    box.setBounds(mXOffset + getLocalBounds().getWidth() / 4, 200, 100, 20);
+    box.setBounds(mXOffset + getLocalBounds().getWidth() / 1.5f, 225, 100, 20);
     box.setSelectedItemIndex(param->get());
     addAndMakeVisible(box);
 
