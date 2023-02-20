@@ -37,7 +37,7 @@ private:
                                                                   Slider::SliderStyle style = Slider::SliderStyle::LinearVertical);
     void sliderSetup(SliderWithMenu& slider, AudioParameterInt* param, int x = 0, int y = 0, int width = 100, int height = 100);
     void comboSetup(ComboBox& box, AudioParameterInt* param);
-    void labelSetup(SliderWithMenu& slider, RangedAudioParameter* param, Label& label);
+    void labelSetup(SliderWithMenu& slider, RangedAudioParameter* param, Label& label, std::string name = "0");
 
     SliderWithMenu mSpeedSlider;
     SliderWithMenu mDryWetSlider;

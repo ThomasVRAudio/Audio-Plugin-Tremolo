@@ -15,6 +15,7 @@ CustomLookAndFeel::CustomLookAndFeel()
     setupRotaryKnobPaths();
     setupSyncButtonPaths();
     setupFaderPaths();
+    setColour(PopupMenu::backgroundColourId, juce::Colour(0.f, 0.f, 0.f, 0.0f));
     knobOffset = 3.14f;
 }
 
@@ -243,6 +244,107 @@ void CustomLookAndFeel::drawLinearSlider(Graphics& g, int x, int y, int width, i
         g.fillPath(faderKnobPath);
 
 
+}
+
+void CustomLookAndFeel::drawComboBox(Graphics& g, int width, int height, bool,
+    int, int, int, int, ComboBox& box)
+{   
+    Rectangle<int> boxBounds(0, 0, width, height);
+
+    g.setGradientFill(juce::ColourGradient(juce::Colour(15, 15, 15), width /2,
+        0.f,
+        juce::Colour(51, 51, 51),
+        width /2,
+        height * 0.25f,
+        false));
+    g.fillRoundedRectangle(boxBounds.toFloat(), 1.0f);
+
+    g.setColour(juce::Colour(10,10,10));
+    g.drawRoundedRectangle(boxBounds.toFloat().reduced(0.5f, 0.5f), 1.0f, 2.0f);
+
+    Rectangle<int> arrowZone(width - 30, 0, 20, height);
+    Path path;
+    path.startNewSubPath((float)arrowZone.getX() + 3.0f, (float)arrowZone.getCentreY() - 2.0f);
+    path.lineTo((float)arrowZone.getCentreX(), (float)arrowZone.getCentreY() + 3.0f);
+    path.lineTo((float)arrowZone.getRight() - 3.0f, (float)arrowZone.getCentreY() - 2.0f);
+
+    g.setColour(box.findColour(ComboBox::arrowColourId).withAlpha((box.isEnabled() ? 0.9f : 0.2f)));
+    g.strokePath(path, PathStrokeType(2.0f));
+}
+
+void CustomLookAndFeel::drawPopupMenuItem(Graphics& g, const Rectangle<int>& area,
+    const bool isSeparator, const bool isActive,
+    const bool isHighlighted, const bool isTicked,
+    const bool hasSubMenu, const String& text,
+    const String& shortcutKeyText,
+    const Drawable* icon, const Colour* const textColourToUse)
+{
+        auto textColour = (textColourToUse == nullptr ? juce::Colours::white
+            : *textColourToUse);
+
+        auto r = area.reduced(1);
+
+        auto font = getPopupMenuFont();
+        font.setHeight(20.f);
+        font.setBold(true);
+
+        if (isHighlighted && isActive)
+        {
+            g.setColour(juce::Colour(50,50,50));
+            g.fillRect(r);
+
+            g.setColour(findColour(PopupMenu::highlightedTextColourId));
+        }
+        else
+        {
+            g.setColour(textColour.withMultipliedAlpha(isActive ? 1.0f : 0.5f));
+        }
+
+        r.reduce(jmin(5, area.getWidth() / 20), 0);
+
+
+
+        auto maxFontHeight = (float)r.getHeight() / 1.3f;
+
+        if (font.getHeight() > maxFontHeight)
+            font.setHeight(maxFontHeight);
+
+        g.setFont(font);
+
+        r.removeFromRight(3);
+        g.drawFittedText(text, r, Justification::centredLeft, 1);
+}
+
+void CustomLookAndFeel::drawPopupMenuBackgroundWithOptions(Graphics& g,
+    int width,
+    int height,
+    const PopupMenu::Options& menu)
+{
+
+    g.setColour(juce::Colour(30, 30, 30));
+    Rectangle<float>area(width, height);
+    g.fillRoundedRectangle(area.reduced(2.f), 3.f);
+    
+}
+
+int CustomLookAndFeel::getMenuWindowFlags()
+{
+    return 0;
+}
+
+Font CustomLookAndFeel::getComboBoxFont(ComboBox& box)
+{
+    Font font = jmin(14.0f, (float)box.getHeight() * 0.85f);
+    font.setBold(true);
+    return font;
+}
+
+Font CustomLookAndFeel::getDefaultFont()
+{
+    Font font = 15.f;
+    font.setBold(true);
+
+    return font;
 }
 
 void CustomLookAndFeel::setupRotaryKnobPaths()

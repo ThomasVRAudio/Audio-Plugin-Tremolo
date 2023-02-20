@@ -22,7 +22,21 @@ public:
     void drawLinearSlider(Graphics&, int x, int y, int width, int height,
         float sliderPos, float minSliderPos, float maxSliderPos,
         const Slider::SliderStyle, Slider&) override;
+    void drawComboBox(Graphics&, int width, int height, bool isButtonDown,
+        int buttonX, int buttonY, int buttonW, int buttonH,
+        ComboBox&) override;
+    void drawPopupMenuItem(Graphics&, const Rectangle<int>& area,
+        bool isSeparator, bool isActive, bool isHighlighted, bool isTicked, bool hasSubMenu,
+        const String& text, const String& shortcutKeyText,
+        const Drawable* icon, const Colour* textColour) override;
+    void drawPopupMenuBackgroundWithOptions(Graphics&,
+        int width,
+        int height,
+        const PopupMenu::Options&) override;
+    int getMenuWindowFlags() override;
 
+    Font getComboBoxFont(ComboBox& box) override;
+    Font getDefaultFont();
 
 private:
     void setupRotaryKnobPaths();

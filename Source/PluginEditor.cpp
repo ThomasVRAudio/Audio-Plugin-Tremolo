@@ -18,21 +18,20 @@ TVRATremoloAudioProcessorEditor::TVRATremoloAudioProcessorEditor (TVRATremoloAud
 {
     // Make sure that before the constructor has finished, you've set the
     // editor's size to whatever you need it to be.
-    setSize (400, 300);
+    setSize (400, 350);
 
     juce::LookAndFeel::setDefaultLookAndFeel(&mLookAndFeel);
 
-    mTitleBox = { 80, 250,300, 50 };
+    mTitleBox = { 80, 300,300, 50 };
     mTitleFont.setBold(true);
     mTitleFont.setHeight(15.0f);
-
 
     auto params = audioProcessor.getParameters();
 
     mXOffset = -30;
-    mYOffset = 10;
+    mYOffset = 40;
     mKnobOffset = 15;
-    float mKnobYOffset = 30;
+    float mKnobYOffset = 55;
 
     AudioParameterFloat* speedParameter = (AudioParameterFloat*)params.getUnchecked(0);
     AudioParameterFloat* dryWetParameter = (AudioParameterFloat*)params.getUnchecked(1);
@@ -48,11 +47,11 @@ TVRATremoloAudioProcessorEditor::TVRATremoloAudioProcessorEditor (TVRATremoloAud
     AudioParameterFloat* depthLFODepthParameter = (AudioParameterFloat*)params.getUnchecked(9);
 
     sliderSetup(mSpeedSlider, speedParameter, mXOffset + getLocalBounds().getWidth() / 4, mYOffset);
-    sliderSetup(mDryWetSlider, dryWetParameter, mXOffset + 2 * (getLocalBounds().getWidth() / 4), mYOffset);
-    sliderSetup(mDepthSlider, depthParameter, mXOffset + 3 * (getLocalBounds().getWidth() / 4), mYOffset);
+    sliderSetup(mDryWetSlider, dryWetParameter, mXOffset + 3 * (getLocalBounds().getWidth() / 4), mYOffset);
+    sliderSetup(mDepthSlider, depthParameter, mXOffset + 2 * (getLocalBounds().getWidth() / 4), mYOffset);
 
     labelSetup(mSpeedSlider, speedParameter, mSpeedLabel);
-    labelSetup(mDryWetSlider, dryWetParameter, mDryWetLabel);
+    labelSetup(mDryWetSlider, dryWetParameter, mDryWetLabel, "Wet");
     labelSetup(mDepthSlider, depthParameter, mDepthLabel);
     
     sliderSetup(mSpeedLFOKnob, speedLFOParameter, mXOffset + getLocalBounds().getWidth() / 4 + mKnobOffset, 100 + mKnobYOffset, 30,30, Slider::SliderStyle::RotaryVerticalDrag);
@@ -67,7 +66,7 @@ TVRATremoloAudioProcessorEditor::TVRATremoloAudioProcessorEditor (TVRATremoloAud
     comboSetup(mShapeType, shapeParameter);
 
     mSyncButton = std::make_unique <ToggleButton>("Sync");
-    mSyncButton->setBounds(65, 220, 70, 70);
+    mSyncButton->setBounds(65, 250, 70, 70);
     mSyncButton->setToggleable(true);
     mSyncButton->setToggleState(audioProcessor.getSync(), dontSendNotification);
     addAndMakeVisible(*mSyncButton);
@@ -121,17 +120,24 @@ void TVRATremoloAudioProcessorEditor::sliderSetup(SliderWithMenu& slider, AudioP
     slider.setupMouseEvent(*this, audioProcessor, param->getParameterIndex());
 }
 
-void TVRATremoloAudioProcessorEditor::labelSetup(SliderWithMenu& slider, RangedAudioParameter* param, Label& label) {
-    label.setText(param->getParameterID(), dontSendNotification);
-    label.attachToComponent(&slider, true);
-    label.setFont(mTitleFont);
+void TVRATremoloAudioProcessorEditor::labelSetup(SliderWithMenu& slider, RangedAudioParameter* param, Label& label, std::string name) {
+    
+    if (name != "0") {
+        label.setText(name, dontSendNotification);
+    }
+    else {
+        label.setText(param->getParameterID(), dontSendNotification);
+    }
+    label.attachToComponent(&slider, false);
+    label.setFont(mLookAndFeel.getDefaultFont());
     label.setColour(label.textColourId, juce::Colour(242, 243, 241));
+    label.setJustificationType(Justification::centred);
     addAndMakeVisible(label);
 }
 
 void TVRATremoloAudioProcessorEditor::comboSetup(ComboBox& box, AudioParameterInt* param) {
     
-    box.setBounds(mXOffset + getLocalBounds().getWidth() / 1.5f, 225, 100, 20);
+    box.setBounds(mXOffset + getLocalBounds().getWidth() / 1.5f, 270, 100, 20);
     box.setSelectedItemIndex(param->get());
     addAndMakeVisible(box);
 
@@ -154,13 +160,28 @@ void TVRATremoloAudioProcessorEditor::paint (juce::Graphics& g)
     //g.setColour(juce::Colour(50, 50, 50));
     g.fillAll();
 
-    g.setGradientFill(juce::ColourGradient(juce::Colour(30, 108, 142), 0.f, 0.f,
-        juce::Colours::beige,
+    //g.setGradientFill(juce::ColourGradient(juce::Colour(30, 108, 142), 0.f, 0.f,
+    //    juce::Colours::beige,
+    //    (float)mTitleBox.getWidth(),
+    //    (float)mTitleBox.getHeight(),
+    //    false));
+        g.setGradientFill(juce::ColourGradient(juce::Colours::darkgrey, 0.f, 0.f,
+        juce::Colours::lightgrey,
         (float)mTitleBox.getWidth(),
         (float)mTitleBox.getHeight(),
         false));
+    //g.setColour(juce::Colours::grey);
     g.setFont (mTitleFont);
     g.drawFittedText ("Thomas VR Audio :: Tremolo", mTitleBox, juce::Justification::right, 1);
+
+    Rectangle<int> rect = {0, getBounds().getHeight() / 2 - 40, getBounds().getWidth(),20};
+    g.setFont(mLookAndFeel.getDefaultFont());
+    g.setColour(juce::Colours::grey);
+    g.drawFittedText("Fader LFO Speed: ", rect, juce::Justification::centred, 1);
+
+    Rectangle<int> rect2 = { 0, getBounds().getHeight() / 2 + 10, getBounds().getWidth(),20 };
+
+    g.drawFittedText("Fader LFO Depth: ", rect2, juce::Justification::centred, 1);
 }
 
 void TVRATremoloAudioProcessorEditor::resized()
