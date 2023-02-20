@@ -32,7 +32,7 @@ private:
     void sliderSetup(SliderWithMenu& slider, AudioParameterFloat* param, 
                                                                   int x = 0, 
                                                                   int y = 0, 
-                                                                  int width = 20, 
+                                                                  int width = 60, 
                                                                   int height = 100, 
                                                                   Slider::SliderStyle style = Slider::SliderStyle::LinearVertical);
     void sliderSetup(SliderWithMenu& slider, AudioParameterInt* param, int x = 0, int y = 0, int width = 100, int height = 100);

@@ -19,20 +19,27 @@ public:
         float rotaryEndAngle, Slider&) override;
     void drawToggleButton(Graphics&, ToggleButton&,
         bool shouldDrawButtonAsHighlighted, bool shouldDrawButtonAsDown) override;
+    void drawLinearSlider(Graphics&, int x, int y, int width, int height,
+        float sliderPos, float minSliderPos, float maxSliderPos,
+        const Slider::SliderStyle, Slider&) override;
 
 
 private:
     void setupRotaryKnobPaths();
     void setupSyncButtonPaths();
+    void setupFaderPaths();
 
     Path rotaryKnobPath;
     Path rotaryKnobBackground;
     Path rotaryKnobRect;
 
-public:
     Path syncKnobPath;
     Path sPath;
-private:
+
+    Path faderPath;
+    Path faderKnobPath;
+
+
     float knobOffset;
 
 

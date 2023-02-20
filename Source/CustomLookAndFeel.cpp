@@ -14,6 +14,7 @@ CustomLookAndFeel::CustomLookAndFeel()
 {
     setupRotaryKnobPaths();
     setupSyncButtonPaths();
+    setupFaderPaths();
     knobOffset = 3.14f;
 }
 
@@ -129,6 +130,121 @@ void CustomLookAndFeel::drawToggleButton(Graphics& g, ToggleButton& button,
 
 }
 
+void CustomLookAndFeel::drawLinearSlider(Graphics& g, int x, int y, int width, int height,
+    float sliderPos,
+    float minSliderPos,
+    float maxSliderPos,
+    const Slider::SliderStyle style, Slider& slider)
+{
+
+        auto trackWidth = width * 0.22f;
+
+        Point<float> startPoint((float)x + (float)width * 0.5f, (float)(height + y));
+        Point<float> endPoint(startPoint.x, (float)y);
+
+        // BACKGROUND
+        Path backgroundTrack;
+        backgroundTrack.startNewSubPath(startPoint);
+        backgroundTrack.lineTo(endPoint);
+        g.setGradientFill(juce::ColourGradient(juce::Colour(0, 0, 16), width / 2, 0.f,
+            juce::Colour(70, 70, 70),
+            width / 2,
+            height,
+            false));
+        g.strokePath(backgroundTrack, { trackWidth, PathStrokeType::curved, PathStrokeType::rounded });
+
+        //BLACK
+        Path path2;
+        endPoint.y += 2.f;
+        path2.startNewSubPath(startPoint);
+        path2.lineTo(endPoint);
+        g.setColour(juce::Colour(0, 0, 0));
+        g.strokePath(path2, { trackWidth -2.0f, PathStrokeType::curved, PathStrokeType::rounded });
+
+        // GRADIENT BG
+        Path path3;
+        endPoint.y += 2.f;
+        path3.startNewSubPath(startPoint);
+        path3.lineTo(endPoint);
+        g.setGradientFill(juce::ColourGradient(juce::Colour(0, 0, 6), width / 2, 0.f,
+            juce::Colour(87, 87, 87),
+            width / 2,
+            height,
+            false));
+        g.strokePath(path3, { trackWidth -4.f, PathStrokeType::curved, PathStrokeType::rounded });
+
+        Path path4;
+        endPoint.y += 2.f;
+        path4.startNewSubPath(startPoint);
+        path4.lineTo(endPoint);
+        g.setColour(juce::Colour(30, 30, 30));
+        g.strokePath(path4, { trackWidth - 12.f, PathStrokeType::curved, PathStrokeType::rounded });
+
+
+        Path valueTrack;
+        Point<float> minPoint, maxPoint, thumbPoint;
+
+            auto kx = ((float)x + (float)width * 0.5f);
+            auto ky = sliderPos;
+
+            minPoint = startPoint;
+            maxPoint = { kx, ky };
+
+        // FILL VALUE COLOUR
+        valueTrack.startNewSubPath(minPoint);
+        valueTrack.lineTo(maxPoint);
+        g.setGradientFill(juce::ColourGradient(juce::Colour(91, 255, 127), width / 2, 0.f,
+            juce::Colour(0, 255, 255),
+            width / 2,
+            height,
+            false));
+        g.strokePath(valueTrack, { trackWidth -10.f, PathStrokeType::curved, PathStrokeType::rounded });
+
+        auto thumbWidth = width * 0.6f;
+        auto thumbHeight = thumbWidth / 2.5f;
+
+        auto valueWidth = maxPoint.x - thumbWidth / 2;
+        auto valueHeight = maxPoint.y - thumbHeight / 2;
+        
+        // KNOB EDGE
+        faderKnobPath.scaleToFit(valueWidth, valueHeight, thumbWidth, thumbHeight, true);
+        g.setGradientFill(juce::ColourGradient(juce::Colour(103, 103, 103), valueWidth / 2, valueHeight,
+            juce::Colour(0, 0, 0),
+            valueWidth / 2,
+            valueHeight + thumbHeight,
+            false));
+        g.fillPath(faderKnobPath);
+
+        // KNOB MAIN BODY
+        faderKnobPath.scaleToFit(valueWidth + 0.f, valueHeight + 1.f, thumbWidth - 0.f, thumbHeight - 2.f, true);
+        g.setGradientFill(juce::ColourGradient(juce::Colour(71, 71, 71), valueWidth / 2, valueHeight,
+            juce::Colour(42, 42, 42),
+            valueWidth / 2,
+            valueHeight + thumbHeight,
+            false));
+        g.fillPath(faderKnobPath);
+
+        ////KNOB INNER EDGE
+        //faderKnobPath.scaleToFit(valueWidth + 4.f, valueHeight + 3.f, thumbWidth - 8.f, thumbHeight - 6.f, true);
+        //g.setGradientFill(juce::ColourGradient(juce::Colour(117, 117, 117), valueWidth / 2, valueHeight,
+        //    juce::Colour(37, 37, 37),
+        //    valueWidth / 2,
+        //    valueHeight + thumbHeight,
+        //    false));
+        //g.fillPath(faderKnobPath);
+
+        // KNOB INNER BODY
+        faderKnobPath.scaleToFit(valueWidth + 3.f, valueHeight + 3.f, thumbWidth - 6.f, thumbHeight - 6.f, true);
+        g.setGradientFill(juce::ColourGradient(juce::Colour(35, 35, 35), valueWidth / 2, valueHeight,
+            juce::Colour(90, 90, 90),
+            valueWidth / 2,
+            valueHeight + thumbHeight /2,
+            false));
+        g.fillPath(faderKnobPath);
+
+
+}
+
 void CustomLookAndFeel::setupRotaryKnobPaths()
 {
     static const unsigned char pathData[] = { 110,109,158,217,68,65,36,213,58,181,108,158,217,68,65,0,0,128,181,108,253,2,59,65,0,228,123,60,108,167,50,49,65,0,194,123,61,108,229,110,39,65,64,119,13,62,108,245,189,29,65,64,33,123,62,108,11,38,20,65,192,211,195,62,108,75,173,10,65,32,172,12,63,108,
@@ -205,6 +321,21 @@ void CustomLookAndFeel::setupSyncButtonPaths()
 67,113,107,20,139,67,16,238,59,67,192,23,137,67,101,87,57,67,113,21,27,135,67,101,183,54,67,192,109,133,67,100,151,48,67,99,101,0,0 };
 
     sPath.loadPathFromData(sPathData, sizeof(sPathData));
+
+}
+
+void CustomLookAndFeel::setupFaderPaths()
+{
+    static const unsigned char faderPathData[] = { 110,109,120,177,105,67,139,68,192,194,98,185,196,108,67,139,68,192,194,129,62,111,67,250,80,187,194,129,62,111,67,120,42,181,194,108,129,62,111,67,137,117,52,66,98,129,62,111,67,141,194,64,66,185,196,108,67,174,169,74,66,120,177,105,67,174,169,74,66,
+98,55,158,102,67,174,169,74,66,110,36,100,67,141,194,64,66,110,36,100,67,137,117,52,66,108,110,36,100,67,120,42,181,194,98,110,36,100,67,250,80,187,194,55,158,102,67,139,68,192,194,120,177,105,67,139,68,192,194,99,101,0,0 };
+
+    faderPath.loadPathFromData(faderPathData, sizeof(faderPathData));
+
+    static const unsigned char faderKnobPathData[] = { 110,109,86,77,97,67,85,127,75,194,108,153,21,114,67,85,127,75,194,98,148,132,116,67,85,127,75,194,28,122,118,67,52,169,67,194,28,122,118,67,74,237,57,194,108,28,122,118,67,113,49,41,194,98,28,122,118,67,134,117,31,194,148,132,116,67,102,159,23,194,153,
+21,114,67,102,159,23,194,108,86,77,97,67,102,159,23,194,98,91,222,94,67,102,159,23,194,211,232,92,67,134,117,31,194,211,232,92,67,113,49,41,194,108,211,232,92,67,74,237,57,194,98,211,232,92,67,53,169,67,194,91,222,94,67,85,127,75,194,86,77,97,67,85,127,
+75,194,99,101,0,0 };
+
+    faderKnobPath.loadPathFromData(faderKnobPathData, sizeof(faderKnobPathData));
 
 }
 

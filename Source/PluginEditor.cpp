@@ -29,9 +29,10 @@ TVRATremoloAudioProcessorEditor::TVRATremoloAudioProcessorEditor (TVRATremoloAud
 
     auto params = audioProcessor.getParameters();
 
-    mXOffset = -20;
-    mYOffset = 0;
-    mKnobOffset = -10;
+    mXOffset = -30;
+    mYOffset = 10;
+    mKnobOffset = 15;
+    float mKnobYOffset = 30;
 
     AudioParameterFloat* speedParameter = (AudioParameterFloat*)params.getUnchecked(0);
     AudioParameterFloat* dryWetParameter = (AudioParameterFloat*)params.getUnchecked(1);
@@ -54,19 +55,19 @@ TVRATremoloAudioProcessorEditor::TVRATremoloAudioProcessorEditor (TVRATremoloAud
     labelSetup(mDryWetSlider, dryWetParameter, mDryWetLabel);
     labelSetup(mDepthSlider, depthParameter, mDepthLabel);
     
-    sliderSetup(mSpeedLFOKnob, speedLFOParameter, mXOffset + getLocalBounds().getWidth() / 4 + mKnobOffset, 100, 40,40, Slider::SliderStyle::RotaryVerticalDrag);
-    sliderSetup(mDryWetLFOKnob, speedLFOParameter, mXOffset + 2 * getLocalBounds().getWidth() / 4 + mKnobOffset, 100, 40, 40, Slider::SliderStyle::RotaryVerticalDrag);
-    sliderSetup(mDepthLFOKnob, speedLFOParameter, mXOffset + 3 * getLocalBounds().getWidth() / 4 + mKnobOffset, 100, 40, 40, Slider::SliderStyle::RotaryVerticalDrag);
+    sliderSetup(mSpeedLFOKnob, speedLFOParameter, mXOffset + getLocalBounds().getWidth() / 4 + mKnobOffset, 100 + mKnobYOffset, 30,30, Slider::SliderStyle::RotaryVerticalDrag);
+    sliderSetup(mDryWetLFOKnob, speedLFOParameter, mXOffset + 2 * getLocalBounds().getWidth() / 4 + mKnobOffset, 100 + mKnobYOffset, 30, 30, Slider::SliderStyle::RotaryVerticalDrag);
+    sliderSetup(mDepthLFOKnob, speedLFOParameter, mXOffset + 3 * getLocalBounds().getWidth() / 4 + mKnobOffset, 100 + mKnobYOffset, 30, 30, Slider::SliderStyle::RotaryVerticalDrag);
 
-    sliderSetup(mSpeedLFODepthKnob, speedLFODepthParameter, mXOffset + getLocalBounds().getWidth() / 4 + mKnobOffset, 150, 40, 40, Slider::SliderStyle::RotaryVerticalDrag);
-    sliderSetup(mDryWetLFODepthKnob, dryWetLFODepthParameter, mXOffset + 2 * getLocalBounds().getWidth() / 4 + mKnobOffset, 150, 40, 40, Slider::SliderStyle::RotaryVerticalDrag);
-    sliderSetup(mDepthLFODepthKnob, depthLFODepthParameter, mXOffset + 3 * getLocalBounds().getWidth() / 4 + mKnobOffset, 150, 40, 40, Slider::SliderStyle::RotaryVerticalDrag);
+    sliderSetup(mSpeedLFODepthKnob, speedLFODepthParameter, mXOffset + getLocalBounds().getWidth() / 4 + mKnobOffset, 150 + mKnobYOffset, 30, 30, Slider::SliderStyle::RotaryVerticalDrag);
+    sliderSetup(mDryWetLFODepthKnob, dryWetLFODepthParameter, mXOffset + 2 * getLocalBounds().getWidth() / 4 + mKnobOffset, 150 + mKnobYOffset, 30, 30, Slider::SliderStyle::RotaryVerticalDrag);
+    sliderSetup(mDepthLFODepthKnob, depthLFODepthParameter, mXOffset + 3 * getLocalBounds().getWidth() / 4 + mKnobOffset, 150 + mKnobYOffset, 30, 30, Slider::SliderStyle::RotaryVerticalDrag);
 
     mShapeType.addItemList(mShapeTypeList,1);
     comboSetup(mShapeType, shapeParameter);
 
     mSyncButton = std::make_unique <ToggleButton>("Sync");
-    mSyncButton->setBounds(70, 210, 70, 70);
+    mSyncButton->setBounds(65, 220, 70, 70);
     mSyncButton->setToggleable(true);
     mSyncButton->setToggleState(audioProcessor.getSync(), dontSendNotification);
     addAndMakeVisible(*mSyncButton);
@@ -123,6 +124,7 @@ void TVRATremoloAudioProcessorEditor::sliderSetup(SliderWithMenu& slider, AudioP
 void TVRATremoloAudioProcessorEditor::labelSetup(SliderWithMenu& slider, RangedAudioParameter* param, Label& label) {
     label.setText(param->getParameterID(), dontSendNotification);
     label.attachToComponent(&slider, true);
+    label.setFont(mTitleFont);
     label.setColour(label.textColourId, juce::Colour(242, 243, 241));
     addAndMakeVisible(label);
 }
@@ -144,16 +146,14 @@ TVRATremoloAudioProcessorEditor::~TVRATremoloAudioProcessorEditor()
 void TVRATremoloAudioProcessorEditor::paint (juce::Graphics& g)
 {
 
-    g.setGradientFill(juce::ColourGradient(juce::Colour(80, 89, 96), 0.f, 0.f, 
-                                           juce::Colour(124, 125, 114), 
+    g.setGradientFill(juce::ColourGradient(juce::Colour(50, 50, 50), 0.f, 0.f, 
+                                           juce::Colour(77, 77, 77), 
                                            (float)getLocalBounds().getWidth(), 
                                            (float)getLocalBounds().getHeight(), 
                                            false));
+    //g.setColour(juce::Colour(50, 50, 50));
     g.fillAll();
-    
-    // (Our component is opaque, so we must completely fill the background with a solid colour)
-    //g.fillAll (getLookAndFeel().findColour (juce::ResizableWindow::backgroundColourId));
-    g.setColour (juce::Colour(242, 243, 241));
+
     g.setGradientFill(juce::ColourGradient(juce::Colour(30, 108, 142), 0.f, 0.f,
         juce::Colours::beige,
         (float)mTitleBox.getWidth(),
