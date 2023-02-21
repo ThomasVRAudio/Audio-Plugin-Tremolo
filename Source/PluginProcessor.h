@@ -83,6 +83,8 @@ private:
     float mSmoothLFO;
 
     double mSpeedLFOPeriod{ 0.0 };
+    double mDryWetLFOPeriod{ 0.0 };
+    double mDepthLFOPeriod{ 0.0 };
 
     double mSamplesInMinutes{0};
 

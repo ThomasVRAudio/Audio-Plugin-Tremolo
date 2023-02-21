@@ -24,13 +24,13 @@ TVRATremoloAudioProcessor::TVRATremoloAudioProcessor()
 {
 
     addParameter(mSpeedParameter = new AudioParameterFloat("Speed", "Speed", 0.01f, 20.f, 10.f));
-    addParameter(mDryWetParameter = new AudioParameterFloat("DryWet", "DryWet", 0.0f, 1.0f, 0.5f));
-    addParameter(mDepthParameter = new AudioParameterFloat("Depth", "Depth", 0.0f, 1.0f, 0.5f));
+    addParameter(mDryWetParameter = new AudioParameterFloat("DryWet", "DryWet", 0.0f, 1.0f, 1.f));
+    addParameter(mDepthParameter = new AudioParameterFloat("Depth", "Depth", 0.0f, 1.0f, 1.f));
     addParameter(mShapeParameter = new AudioParameterInt("Shape", "Shape", 0, 3, 0));
 
-    addParameter(mSpeedLFOParameter = new AudioParameterFloat("SpeedLFO", "SpeedLFO", 0.01f, 0.5f, 0.5f));
-    addParameter(mDryWetLFOParameter = new AudioParameterFloat("DryWetLFO", "DryWetLFO", 1.f, 20.f, 1.f));
-    addParameter(mDepthLFOParameter = new AudioParameterFloat("DepthLFO", "DepthLFO", 1.f, 20.f, 1.f));
+    addParameter(mSpeedLFOParameter = new AudioParameterFloat("SpeedLFO", "SpeedLFO", 0.01f, 1.f, 0.5f));
+    addParameter(mDryWetLFOParameter = new AudioParameterFloat("DryWetLFO", "DryWetLFO", 0.01f, 1.f, 0.5f));
+    addParameter(mDepthLFOParameter = new AudioParameterFloat("DepthLFO", "DepthLFO", 0.01f, 1.f, 0.5f));
 
     addParameter(mSpeedLFODepthParameter = new AudioParameterFloat("SpeedLFODepth", "SpeedLFODepth", 0.f, 1.f, 0.f));
     addParameter(mDryWetLFODepthParameter = new AudioParameterFloat("DryWetLFODepth", "DryWetLFODepth", 0.f, 1.f, 0.f));
@@ -181,12 +181,16 @@ void TVRATremoloAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, 
         float BPS = mBPM != 0 && mSyncToggle ? mBPM / 60.0 : 1.f;
 
         mSpeedLFOPeriod += juce::MathConstants<float>::twoPi * *mSpeedLFOParameter / getSampleRate();
+        mDryWetLFOPeriod += juce::MathConstants<float>::twoPi * *mDryWetLFOParameter / getSampleRate();
+        mDepthLFOPeriod += juce::MathConstants<float>::twoPi * *mDepthLFOParameter / getSampleRate();
+
         float speedLFO = sin(mSpeedLFOPeriod);
+        float dryWetLFO = sin(mDryWetLFOPeriod);
+        float depthLFO = sin(mDepthLFOPeriod);
+
         float speedLFOMapped = 1 - *mSpeedLFODepthParameter + *mSpeedLFODepthParameter * jmap(speedLFO, -1.f, 1.f, 0.1f, 1.f);
-
-
-        float dryWetLFOMapped = 1 - *mDryWetLFODepthParameter + *mDryWetLFODepthParameter * jmap(speedLFO, -1.f, 1.f, 0.1f, 1.f);
-        float depthLFOMapped = 1 - *mDepthLFODepthParameter + *mDepthLFODepthParameter * jmap(speedLFO, -1.f, 1.f, 0.1f, 1.f);
+        float dryWetLFOMapped = 1 - *mDryWetLFODepthParameter + *mDryWetLFODepthParameter * jmap(dryWetLFO, -1.f, 1.f, 0.1f, 1.f);
+        float depthLFOMapped = 1 - *mDepthLFODepthParameter + *mDepthLFODepthParameter * jmap(depthLFO, -1.f, 1.f, 0.1f, 1.f);
 
         float speed = mSyncToggle ? BPS / mSyncSpeed : *mSpeedParameter * speedLFOMapped;
         mSmoothSpeedParam = mSmoothSpeedParam + 0.001 * (speed - mSmoothSpeedParam);

@@ -30,7 +30,7 @@ TVRATremoloAudioProcessorEditor::TVRATremoloAudioProcessorEditor (TVRATremoloAud
 
     mXOffset = -30;
     mYOffset = 40;
-    mKnobOffset = 15;
+    mKnobOffset = 10;
     float mKnobYOffset = 55;
 
     AudioParameterFloat* speedParameter = (AudioParameterFloat*)params.getUnchecked(0);
@@ -53,20 +53,22 @@ TVRATremoloAudioProcessorEditor::TVRATremoloAudioProcessorEditor (TVRATremoloAud
     labelSetup(mSpeedSlider, speedParameter, mSpeedLabel);
     labelSetup(mDryWetSlider, dryWetParameter, mDryWetLabel, "Wet");
     labelSetup(mDepthSlider, depthParameter, mDepthLabel);
-    
-    sliderSetup(mSpeedLFOKnob, speedLFOParameter, mXOffset + getLocalBounds().getWidth() / 4 + mKnobOffset, 100 + mKnobYOffset, 30,30, Slider::SliderStyle::RotaryVerticalDrag);
-    sliderSetup(mDryWetLFOKnob, speedLFOParameter, mXOffset + 2 * getLocalBounds().getWidth() / 4 + mKnobOffset, 100 + mKnobYOffset, 30, 30, Slider::SliderStyle::RotaryVerticalDrag);
-    sliderSetup(mDepthLFOKnob, speedLFOParameter, mXOffset + 3 * getLocalBounds().getWidth() / 4 + mKnobOffset, 100 + mKnobYOffset, 30, 30, Slider::SliderStyle::RotaryVerticalDrag);
 
-    sliderSetup(mSpeedLFODepthKnob, speedLFODepthParameter, mXOffset + getLocalBounds().getWidth() / 4 + mKnobOffset, 150 + mKnobYOffset, 30, 30, Slider::SliderStyle::RotaryVerticalDrag);
-    sliderSetup(mDryWetLFODepthKnob, dryWetLFODepthParameter, mXOffset + 2 * getLocalBounds().getWidth() / 4 + mKnobOffset, 150 + mKnobYOffset, 30, 30, Slider::SliderStyle::RotaryVerticalDrag);
-    sliderSetup(mDepthLFODepthKnob, depthLFODepthParameter, mXOffset + 3 * getLocalBounds().getWidth() / 4 + mKnobOffset, 150 + mKnobYOffset, 30, 30, Slider::SliderStyle::RotaryVerticalDrag);
+    int knobSize = 40;
+    
+    sliderSetup(mSpeedLFOKnob, speedLFOParameter, mXOffset + getLocalBounds().getWidth() / 4 + mKnobOffset, 100 + mKnobYOffset, knobSize, knobSize, Slider::SliderStyle::RotaryVerticalDrag);
+    sliderSetup(mDepthLFOKnob, depthLFOParameter, mXOffset + 2 * getLocalBounds().getWidth() / 4 + mKnobOffset, 100 + mKnobYOffset, knobSize, knobSize, Slider::SliderStyle::RotaryVerticalDrag);
+    sliderSetup(mDryWetLFOKnob, dryWetLFOParameter, mXOffset + 3 * getLocalBounds().getWidth() / 4 + mKnobOffset, 100 + mKnobYOffset, knobSize, knobSize, Slider::SliderStyle::RotaryVerticalDrag);
+
+    sliderSetup(mSpeedLFODepthKnob, speedLFODepthParameter, mXOffset + getLocalBounds().getWidth() / 4 + mKnobOffset, 160 + mKnobYOffset, knobSize, knobSize, Slider::SliderStyle::RotaryVerticalDrag);
+    sliderSetup(mDepthLFODepthKnob, depthLFODepthParameter, mXOffset + 2 * getLocalBounds().getWidth() / 4 + mKnobOffset, 160 + mKnobYOffset, knobSize, knobSize, Slider::SliderStyle::RotaryVerticalDrag);
+    sliderSetup(mDryWetLFODepthKnob, dryWetLFODepthParameter, mXOffset + 3 * getLocalBounds().getWidth() / 4 + mKnobOffset, 160 + mKnobYOffset, knobSize, knobSize, Slider::SliderStyle::RotaryVerticalDrag);
 
     mShapeType.addItemList(mShapeTypeList,1);
     comboSetup(mShapeType, shapeParameter);
 
     mSyncButton = std::make_unique <ToggleButton>("Sync");
-    mSyncButton->setBounds(65, 250, 70, 70);
+    mSyncButton->setBounds(65, 270, 70, 70);
     mSyncButton->setToggleable(true);
     mSyncButton->setToggleState(audioProcessor.getSync(), dontSendNotification);
     addAndMakeVisible(*mSyncButton);
@@ -137,7 +139,7 @@ void TVRATremoloAudioProcessorEditor::labelSetup(SliderWithMenu& slider, RangedA
 
 void TVRATremoloAudioProcessorEditor::comboSetup(ComboBox& box, AudioParameterInt* param) {
     
-    box.setBounds(mXOffset + getLocalBounds().getWidth() / 1.5f, 270, 100, 20);
+    box.setBounds(mXOffset + getLocalBounds().getWidth() / 1.6f, 270, 100, 20);
     box.setSelectedItemIndex(param->get());
     addAndMakeVisible(box);
 
@@ -157,14 +159,8 @@ void TVRATremoloAudioProcessorEditor::paint (juce::Graphics& g)
                                            (float)getLocalBounds().getWidth(), 
                                            (float)getLocalBounds().getHeight(), 
                                            false));
-    //g.setColour(juce::Colour(50, 50, 50));
     g.fillAll();
 
-    //g.setGradientFill(juce::ColourGradient(juce::Colour(30, 108, 142), 0.f, 0.f,
-    //    juce::Colours::beige,
-    //    (float)mTitleBox.getWidth(),
-    //    (float)mTitleBox.getHeight(),
-    //    false));
         g.setGradientFill(juce::ColourGradient(juce::Colours::darkgrey, 0.f, 0.f,
         juce::Colours::lightgrey,
         (float)mTitleBox.getWidth(),
@@ -179,7 +175,7 @@ void TVRATremoloAudioProcessorEditor::paint (juce::Graphics& g)
     g.setColour(juce::Colours::grey);
     g.drawFittedText("Fader LFO Speed: ", rect, juce::Justification::centred, 1);
 
-    Rectangle<int> rect2 = { 0, getBounds().getHeight() / 2 + 10, getBounds().getWidth(),20 };
+    Rectangle<int> rect2 = { 0, getBounds().getHeight() / 2 + 21 , getBounds().getWidth(),20 };
 
     g.drawFittedText("Fader LFO Depth: ", rect2, juce::Justification::centred, 1);
 }

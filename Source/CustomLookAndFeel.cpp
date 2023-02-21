@@ -26,22 +26,57 @@ void CustomLookAndFeel::drawRotarySlider(Graphics& g, int x, int y, int width, i
     auto transform = juce::AffineTransform::rotation(juce::jmap(sliderPos, rotaryStartAngle + knobOffset, rotaryEndAngle + knobOffset),
         rect.getCentreX(), rect.getCentreY());
 
+    Path bg;
+    bg.addEllipse(rect);
 
-    rotaryKnobBackground.scaleToFit(x, y, width, height, true);
-    g.setColour(juce::Colour(26,26,26));
-    g.fillPath(rotaryKnobBackground, transform);
+    g.setGradientFill(juce::ColourGradient(juce::Colour(77, 77, 77), rect.getWidth() / 2, 0.f,
+    juce::Colour(29,29,29),
+    rect.getWidth() /2,
+    rect.getHeight(),
+    false));
+    g.fillPath(bg);
 
-    rotaryKnobPath.scaleToFit(x + 1, y + 1, width - 2, height - 2, true);
-    g.setGradientFill(juce::ColourGradient(juce::Colour(20, 24, 29), rect.getWidth() / 2, 0.f,
-        juce::Colour(3,0,4),
-        rect.getWidth() /2,
+    Path path2;
+    path2.addEllipse(rect.reduced(3.f));
+    g.setColour(juce::Colour(26, 26, 26));
+    g.fillPath(path2);
+
+    Path path3;
+    path3.addEllipse(rect.reduced(4.f));
+
+    g.setGradientFill(juce::ColourGradient(juce::Colour(14, 14, 14), rect.getWidth() / 2, rect.getHeight(),
+        juce::Colour(51, 51, 51),
+        rect.getWidth() / 2,
+        rect.getHeight() *1.5f,
+        true));
+    g.fillPath(path3);
+
+    Path path4;
+    path4.addEllipse(rect.reduced(6.f));
+
+    g.setGradientFill(juce::ColourGradient(juce::Colour(114, 114, 114), rect.getWidth() / 2, rect.getHeight() * 0.5f,
+        juce::Colour(40, 40, 40),
+        rect.getWidth() / 2,
+        rect.getHeight() -2.f,
+        false));
+    g.fillPath(path4);
+
+    Path path5;
+    path5.addEllipse(rect.reduced(6.5f));
+
+    g.setGradientFill(juce::ColourGradient(juce::Colour(82, 82, 82), rect.getWidth() / 2, 0.f,
+        juce::Colour(37, 37, 37),
+        rect.getWidth() / 2,
         rect.getHeight(),
         false));
-    g.fillPath(rotaryKnobPath, transform);
+    g.fillPath(path5);
 
-    rotaryKnobRect.scaleToFit(rect.getCentreX() - width/12, rect.getCentreY(), width / 6, height / 2 - 1, false);
-    g.setColour(juce::Colours::beige);
-    g.fillPath(rotaryKnobRect, transform);
+    Path path6;
+    juce::Point<float> newPos(0.f, 9.f);
+    rect.setPosition(rect.getPosition() + newPos);
+    path6.addEllipse(rect.reduced(17.5f));
+    g.setColour(juce::Colour(150, 150, 150));
+    g.fillPath(path6, transform);
 }
 
 void CustomLookAndFeel::drawToggleButton(Graphics& g, ToggleButton& button,
@@ -199,7 +234,7 @@ void CustomLookAndFeel::drawLinearSlider(Graphics& g, int x, int y, int width, i
             width / 2,
             height,
             false));
-        g.strokePath(valueTrack, { trackWidth -10.f, PathStrokeType::curved, PathStrokeType::rounded });
+        g.strokePath(valueTrack, { trackWidth -10.5f, PathStrokeType::curved, PathStrokeType::rounded });
 
         auto thumbWidth = width * 0.6f;
         auto thumbHeight = thumbWidth / 2.5f;
@@ -224,15 +259,6 @@ void CustomLookAndFeel::drawLinearSlider(Graphics& g, int x, int y, int width, i
             valueHeight + thumbHeight,
             false));
         g.fillPath(faderKnobPath);
-
-        ////KNOB INNER EDGE
-        //faderKnobPath.scaleToFit(valueWidth + 4.f, valueHeight + 3.f, thumbWidth - 8.f, thumbHeight - 6.f, true);
-        //g.setGradientFill(juce::ColourGradient(juce::Colour(117, 117, 117), valueWidth / 2, valueHeight,
-        //    juce::Colour(37, 37, 37),
-        //    valueWidth / 2,
-        //    valueHeight + thumbHeight,
-        //    false));
-        //g.fillPath(faderKnobPath);
 
         // KNOB INNER BODY
         faderKnobPath.scaleToFit(valueWidth + 3.f, valueHeight + 3.f, thumbWidth - 6.f, thumbHeight - 6.f, true);
