@@ -238,11 +238,11 @@ void TVRATremoloAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, 
 
         float DryAmount = *mDryWetParameter * dryWetLFOMapped;
 
-        float leftOut = buffer.getSample(0, (int)i) * (1 - DryAmount) + (buffer.getSample(0, (int)i) * lfoMapped) * DryAmount;
-        float rightOut = buffer.getSample(1, (int)i) * (1 - DryAmount) + (buffer.getSample(1, (int)i) * lfoMapped) * DryAmount;
+        for (auto j = 0; j < totalNumOutputChannels; ++j) {
+            float Out = buffer.getSample(j, (int)i) * (1 - DryAmount) + (buffer.getSample(j, (int)i) * lfoMapped) * DryAmount;
+            buffer.setSample(j, (int)i, Out);
+        }
 
-        buffer.setSample(0, (int)i, leftOut);
-        buffer.setSample(1, (int)i, rightOut);
     }
 }
 
